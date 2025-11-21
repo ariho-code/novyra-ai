@@ -1,44 +1,40 @@
 """
-Django settings for novyra_ai project.
+Django settings for novyra_ai project – Fully Vercel / Production Ready
 """
+
 import os
 from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv()  # Load .env in local development only
 
 # Build paths inside the project
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Security settings
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-change-this-in-production')
-DEBUG = os.getenv('DEBUG', 'True') == 'True'
-# ALLOWED_HOSTS
-# In DEBUG mode, Django will allow all hosts (for development/testing)
-# In production, specify exact domains
-default_hosts = 'localhost,127.0.0.1'
-allowed_hosts_env = os.getenv('ALLOWED_HOSTS', default_hosts)
+# ========== SECURITY & ENVIRONMENT ==========
+SECRET_KEY = os.getenv('SECRET_KEY')
+if not SECRET_KEY:
+    raise ValueError("SECRET_KEY environment variable is required!")
 
-# Check if running on Vercel
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
+
+# Detect Vercel environment
 VERCEL = os.getenv('VERCEL', '0') == '1'
 
+# ALLOWED_HOSTS – safe & flexible
 if DEBUG:
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
+    ALLOWED_HOSTS = ['*']  # Only safe during local dev
 elif VERCEL:
-    # On Vercel, allow all hosts (they handle routing)
-    ALLOWED_HOSTS = ['*']
+    ALLOWED_HOSTS = ['*']  # Vercel handles host validation via their proxy
 else:
-    # In production, use specific hosts from environment
-    ALLOWED_HOSTS = [h.strip() for h in allowed_hosts_env.split(',') if h.strip()]
+    allowed = os.getenv('ALLOWED_HOSTS', '')
+    ALLOWED_HOSTS = [h.strip() for h in allowed.split(',') if h.strip()] or ['*']
 
-# Embed widget settings
-# Set this to your actual server domain (e.g., 'https://yourdomain.com')
-# This is used when generating embed code for external websites
-# If not set, it will try to detect from the request
-EMBED_BASE_URL = os.getenv('EMBED_BASE_URL', None)  # e.g., 'https://yourdomain.com'
+# Embed widget base URL (used in embed script generation)
+EMBED_BASE_URL = os.getenv('EMBED_BASE_URL')  # e.g., https://yourdomain.vercel.app
 
-# Application definition
+# ========== APPLICATION DEFINITION ==========
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -46,21 +42,27 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Third-party
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
     'channels',
+
+    # Local
     'chat_app',
 ]
 
+# ========== MIDDLEWARE – WHITENOISE ADDED (CRITICAL FOR VERCEL) ==========
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',        # ← MUST be right after SecurityMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'chat_app.middleware.LoginTrackingMiddleware',  # Track logins
+    'chat_app.middleware.LoginTrackingMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -86,7 +88,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'novyra_ai.wsgi.application'
 ASGI_APPLICATION = 'novyra_ai.asgi.application'
 
-# Database
+# ========== DATABASE ==========
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql' if os.getenv('DB_ENGINE') == 'postgresql' else 'django.db.backends.sqlite3',
@@ -98,7 +100,7 @@ DATABASES = {
     }
 }
 
-# Password validation
+# ========== PASSWORD VALIDATION ==========
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -106,22 +108,30 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# Internationalization
+# ========== INTERNATIONALIZATION ==========
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files
+# ========== STATIC & MEDIA FILES (Vercel-ready with WhiteNoise) ==========
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Default primary key field type
+# Django ≥4.2 style (optional but recommended)
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# REST Framework
+# ========== DJANGO REST FRAMEWORK ==========
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -137,29 +147,25 @@ REST_FRAMEWORK = {
     ],
 }
 
-# JWT Settings
+# ========== SIMPLE JWT ==========
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'ROTATE_REFRESH_TOKENS': True,
 }
 
-# CORS Settings
-# Allow all origins in DEBUG mode
-# In production, specify exact origins
+# ========== CORS ==========
 if DEBUG:
-    # In DEBUG mode, allow all origins
     CORS_ALLOW_ALL_ORIGINS = True
 else:
-    # In production, use specific origins from environment
-    cors_origins = os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:3000,http://127.0.0.1:3000')
-    CORS_ALLOWED_ORIGINS = [origin.strip() for origin in cors_origins.split(',') if origin.strip()]
+    cors_origins = os.getenv('CORS_ALLOWED_ORIGINS', '')
+    CORS_ALLOWED_ORIGINS = [o.strip() for o in cors_origins.split(',') if o.strip()] if cors_origins else []
 CORS_ALLOW_CREDENTIALS = True
 
-# Channels (WebSocket)
-# Use in-memory channel layer for development (no Redis required)
-# For production, use Redis channel layer
-if DEBUG:
+# ========== CHANNELS (WebSockets) ==========
+# Warning: RedisChannelLayer will NOT work on Vercel (serverless). 
+# For production WebSockets on Vercel → use a separate service (e.g., Pusher, Ably, Socket.io on Railway/Render)
+if DEBUG or VERCEL:
     CHANNEL_LAYERS = {
         'default': {
             'BACKEND': 'channels.layers.InMemoryChannelLayer',
@@ -170,22 +176,21 @@ else:
         'default': {
             'BACKEND': 'channels_redis.core.RedisChannelLayer',
             'CONFIG': {
-                "hosts": [('127.0.0.1', 6379)],
+                "hosts": [os.getenv('REDIS_URL', 'redis://127.0.0.1:6379')],
             },
         },
     }
 
-# AI Engine Settings
+# ========== AI & DEEPSEEK ==========
 AI_CONFIDENCE_THRESHOLD = float(os.getenv('AI_CONFIDENCE_THRESHOLD', '0.7'))
 AI_ESCALATION_KEYWORDS = ['help', 'agent', 'human', 'support', 'escalate']
 
-# DeepSeek AI API Settings
-DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY', 'sk-74a60d49d12b4e9889f589ceed6cca5f')
+DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY')
 DEEPSEEK_API_BASE = os.getenv('DEEPSEEK_API_BASE', 'https://api.deepseek.com')
 DEEPSEEK_MODEL = os.getenv('DEEPSEEK_MODEL', 'deepseek-chat')
-USE_DEEPSEEK_AI = os.getenv('USE_DEEPSEEK_AI', 'True') == 'True'  # Enable/disable DeepSeek AI
+USE_DEEPSEEK_AI = os.getenv('USE_DEEPSEEK_AI', 'True') == 'True'
 
-# Email Settings
+# ========== EMAIL ==========
 EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
 EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
 EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
@@ -193,10 +198,25 @@ EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@novyra.agency')
-FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:8000')
 
-# Admin Email
+FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:3000')
+
+# ========== ADMIN ==========
 ADMINS = [
     ('Novyra Admin', os.getenv('ADMIN_EMAIL', 'admin@novyra.agency')),
 ]
 
+# ========== LOGGING (optional but recommended for production) ==========
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
