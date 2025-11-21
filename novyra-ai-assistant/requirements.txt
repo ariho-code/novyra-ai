@@ -1,0 +1,38 @@
+# Django Core
+Django==4.2.7
+djangorestframework==3.14.0
+django-cors-headers==4.3.1
+channels==4.3.1
+channels-redis==4.1.0
+
+# Database (Optional - SQLite is used by default)
+# Uncomment if using PostgreSQL:
+# psycopg2-binary==2.9.9
+# Uncomment if using MySQL:
+# mysqlclient==2.2.0
+
+# Authentication
+djangorestframework-simplejwt==5.3.0
+
+# NLP & AI (Optional - basic keyword matching works without these)
+# Uncomment if you want advanced NLP features:
+# nltk==3.8.1
+# scikit-learn==1.3.2
+# numpy==1.24.3
+
+# Utilities
+python-dotenv==1.0.0
+redis==5.0.1
+celery==5.3.4
+pytz==2023.3
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
+
+# Development
+pytest==7.4.3
+pytest-django==4.7.0
+black==23.11.0
+flake8==6.1.0
+
+

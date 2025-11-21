@@ -1,0 +1,3387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novyra AI Assistant - Customer Support</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            color: #000000;
+            line-height: 1.6;
+        }
+
+        .main-container {
+            min-height: 100vh;
+            background: #f5f5f5;
+            padding: 40px 20px;
+        }
+
+        .content-wrapper {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Header Banner */
+        .header-banner {
+            background: linear-gradient(135deg, #0006B1 0%, #000580 100%);
+            color: #FFFFFF;
+            padding: 40px 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header-banner h1 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header-banner p {
+            font-size: 18px;
+            opacity: 0.95;
+        }
+
+        /* Cards Container */
+        .cards-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* White Card Styling */
+        .help-card {
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .help-card h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #000000;
+            margin-bottom: 20px;
+        }
+
+        /* FAQ List */
+        .faq-list {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .faq-item {
+            padding: 16px 0;
+            border-bottom: 1px solid #e5e5e5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-item:hover {
+            color: #0006B1;
+        }
+
+        .faq-item span {
+            flex: 1;
+            font-size: 15px;
+            color: #000000;
+        }
+
+        .faq-item i {
+            color: #0006B1;
+            font-size: 16px;
+            margin-left: 12px;
+        }
+
+        /* Search Bar */
+        .search-container {
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 12px 16px;
+            padding-right: 45px;
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-bar:focus {
+            border-color: #0006B1;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            pointer-events: none;
+        }
+
+        /* Contact Support Card */
+        .contact-card {
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .contact-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .contact-card:active {
+            transform: translateY(0);
+        }
+
+        .contact-info h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #000000;
+            margin-bottom: 6px;
+        }
+
+        .contact-info p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .contact-arrow {
+            color: #0006B1;
+            font-size: 24px;
+        }
+
+        /* Floating Chat Button (for embedded mode) */
+        .floating-chat-button {
+            display: none;
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: {{ button_color|default:"#0006B1" }};
+            color: #FFFFFF;
+            border: 2px solid #CFB53B;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 6, 177, 0.3);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            {{ position_css|default:"bottom: 25px; right: 25px;" }}
+            flex-direction: row;
+        }
+
+        .floating-chat-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+            filter: brightness(0.85);
+        }
+
+        .floating-chat-button.active {
+            display: flex !important;
+        }
+
+        /* Chat Widget Container */
+        .chat-widget {
+            display: none !important;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 420px;
+            max-width: calc(100vw - 40px);
+            height: 600px;
+            background: #FFFFFF;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1000;
+        }
+
+        /* Embedded mode styles */
+        body.embedded-mode .main-container {
+            display: none;
+        }
+
+        body.embedded-mode .floating-chat-button {
+            display: flex;
+        }
+
+        body.embedded-mode .chat-widget {
+            z-index: 10000;
+        }
+
+        .chat-widget.active {
+            display: flex !important;
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Chat Header */
+        .chat-widget-header {
+            background: #0006B1;
+            color: #FFFFFF;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-widget-header .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: #FFFFFF;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .chat-widget-header .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* In embedded mode, adjust widget size for fullscreen feel */
+        body.embedded-mode .chat-widget {
+            max-width: calc(100vw - 40px);
+            max-height: calc(100vh - 40px);
+        }
+        
+        /* When in iframe, make widget full size */
+        body.embedded-mode.iframe-mode .chat-widget {
+            width: 100% !important;
+            height: 100vh !important;
+            position: relative !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            max-width: none !important;
+            max-height: none !important;
+        }
+
+        @media (max-width: 480px) {
+            body.embedded-mode .chat-widget {
+                width: calc(100vw - 20px);
+                height: calc(100vh - 20px);
+                bottom: 10px;
+                right: 10px;
+                left: 10px;
+            }
+            
+            body.embedded-mode .floating-chat-button {
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+
+        .bot-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            overflow: hidden;
+            position: relative;
+            flex-shrink: 0;
+        }
+        
+        .bot-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .bot-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .bot-info p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        /* Chat Messages Area */
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f0f2f5;
+        }
+
+        .message {
+            margin-bottom: 16px;
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-sender {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 4px;
+            padding: 0 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .message.user .message-sender {
+            justify-content: flex-end;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .message-sender-profile {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .message.user .message-sender-profile {
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .message-content {
+            max-width: 75%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            word-wrap: break-word;
+            line-height: 1.5;
+        }
+
+        .message.user .message-content {
+            background: #0006B1;
+            color: #FFFFFF;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.ai .message-content,
+        .message.agent .message-content {
+            background: #e5e5e5;
+            color: #000000;
+            border-bottom-left-radius: 4px;
+        }
+
+        /* Seen indicator with profile picture (Facebook-style) */
+        .message-seen {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 4px;
+            font-size: 10px;
+            opacity: 0.7;
+            justify-content: flex-end;
+            padding: 0 4px;
+        }
+
+        .message.ai .message-seen,
+        .message.agent .message-seen {
+            justify-content: flex-start;
+        }
+
+        .message-seen-label {
+            font-size: 10px;
+            color: #666;
+        }
+
+        .message.user .message-seen-label {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .message-seen-profile {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .message.user .message-seen-profile {
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .message.agent .message-content {
+            background: #CFB53B;
+            color: #000000;
+            border-bottom-left-radius: 4px;
+            font-weight: 500;
+        }
+
+        /* Typing Indicator */
+        .typing-indicator {
+            display: none;
+            padding: 12px 16px;
+            background: #f0f0f0;
+            border-radius: 12px;
+            max-width: 60px;
+            margin-bottom: 16px;
+        }
+
+        .typing-indicator.active {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #666;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.7;
+            }
+            30% {
+                transform: translateY(-8px);
+                opacity: 1;
+            }
+        }
+
+        /* Option Buttons - Signal/WhatsApp Style */
+        .option-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .option-button {
+            padding: 10px 14px;
+            background: rgba(0, 6, 177, 0.08);
+            border: none;
+            border-radius: 20px;
+            color: #0006B1;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 13px;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 6, 177, 0.1);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .option-button:hover {
+            background: rgba(0, 6, 177, 0.15);
+            transform: translateX(4px);
+        }
+
+        .option-button:active {
+            transform: translateX(2px) scale(0.98);
+        }
+
+        /* Input Form */
+        .input-form-container {
+            padding: 10px 14px;
+            background: #f0f2f5;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            display: none; /* Hidden by default, shown when needed */
+            transition: opacity 0.3s ease;
+        }
+        
+        .input-form-container.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .input-form {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+        }
+
+        .input-field {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 24px;
+            font-size: 14px;
+            outline: none;
+            resize: none;
+            max-height: 100px;
+            min-height: 36px;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            line-height: 1.4;
+            background: rgba(0, 0, 0, 0.05);
+            color: #000000;
+        }
+
+        .input-field::placeholder {
+            color: rgba(0, 0, 0, 0.4);
+            font-weight: 400;
+        }
+
+        .input-field:focus {
+            background: rgba(0, 0, 0, 0.08);
+            box-shadow: 0 0 0 2px rgba(0, 6, 177, 0.2);
+        }
+
+        .input-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(0, 0, 0, 0.05);
+            color: #0006B1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .action-btn:hover {
+            background: rgba(0, 6, 177, 0.1);
+            transform: scale(1.05);
+        }
+
+        .action-btn:active {
+            transform: scale(0.95);
+        }
+
+        .action-btn.recording {
+            background: #ef4444;
+            color: #FFFFFF;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .send-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: #0006B1;
+            color: #FFFFFF;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0, 6, 177, 0.3);
+        }
+
+        .send-btn:hover {
+            background: #000580;
+            transform: scale(1.08);
+            box-shadow: 0 4px 12px rgba(0, 6, 177, 0.4);
+        }
+
+        .send-btn:active {
+            transform: scale(0.92);
+        }
+
+        .send-btn:disabled {
+            background: rgba(0, 0, 0, 0.1);
+            color: rgba(0, 0, 0, 0.3);
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .footer strong {
+            color: #0006B1;
+            font-weight: 600;
+        }
+
+        /* Voice Recording in Chat (WhatsApp Style) */
+        .voice-recording-message {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: #f0f0f0;
+            border-radius: 12px;
+            max-width: 75%;
+            margin-bottom: 16px;
+        }
+
+        .voice-recording-message.user {
+            background: linear-gradient(135deg, #0006B1 0%, #000580 100%);
+            color: #FFFFFF;
+            margin-left: auto;
+        }
+
+        .voice-waves {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            height: 30px;
+            flex: 1;
+        }
+
+        .voice-wave-bar {
+            width: 3px;
+            background: currentColor;
+            border-radius: 2px;
+            animation: waveAnimation 1.2s ease-in-out infinite;
+            opacity: 0.6;
+        }
+
+        .voice-wave-bar:nth-child(1) { height: 8px; animation-delay: 0s; }
+        .voice-wave-bar:nth-child(2) { height: 16px; animation-delay: 0.1s; }
+        .voice-wave-bar:nth-child(3) { height: 24px; animation-delay: 0.2s; }
+        .voice-wave-bar:nth-child(4) { height: 20px; animation-delay: 0.3s; }
+        .voice-wave-bar:nth-child(5) { height: 12px; animation-delay: 0.4s; }
+        .voice-wave-bar:nth-child(6) { height: 18px; animation-delay: 0.5s; }
+        .voice-wave-bar:nth-child(7) { height: 22px; animation-delay: 0.6s; }
+        .voice-wave-bar:nth-child(8) { height: 14px; animation-delay: 0.7s; }
+
+        @keyframes waveAnimation {
+            0%, 100% { transform: scaleY(0.5); opacity: 0.4; }
+            50% { transform: scaleY(1); opacity: 1; }
+        }
+
+        .voice-recording-time {
+            font-size: 13px;
+            font-weight: 500;
+            min-width: 45px;
+            text-align: center;
+        }
+
+        .voice-recording-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .voice-control-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: currentColor;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .voice-control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        /* Voice Message Preview */
+        .voice-message-preview {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: #f0f0f0;
+            border-radius: 12px;
+            max-width: 75%;
+            margin-bottom: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .voice-message-preview.user {
+            background: linear-gradient(135deg, #0006B1 0%, #000580 100%);
+            color: #FFFFFF;
+            margin-left: auto;
+        }
+
+        .voice-message-preview:hover {
+            opacity: 0.9;
+        }
+
+        .voice-play-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.1);
+            border: none;
+            color: currentColor;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .voice-message-preview.user .voice-play-btn {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .voice-play-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .voice-message-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .voice-message-duration {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .voice-message-time {
+            font-size: 11px;
+            opacity: 0.7;
+        }
+
+        /* Voice wave animation */
+        .voice-wave-container {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            margin-left: 8px;
+        }
+
+        .voice-wave {
+            width: 3px;
+            height: 16px;
+            background: currentColor;
+            border-radius: 2px;
+            animation: wave 1.2s ease-in-out infinite;
+            opacity: 0.6;
+        }
+
+        .voice-wave:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .voice-wave:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .voice-wave:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+        .voice-wave:nth-child(5) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes wave {
+            0%, 100% {
+                transform: scaleY(0.5);
+                opacity: 0.4;
+            }
+            50% {
+                transform: scaleY(1);
+                opacity: 0.8;
+            }
+        }
+
+        .voice-message-preview.playing .voice-wave {
+            animation-play-state: running;
+        }
+
+        .voice-message-preview:not(.playing) .voice-wave {
+            animation-play-state: paused;
+        }
+
+        .recording-animation {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #ef4444;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+            font-size: 32px;
+            animation: pulse 1.5s infinite;
+        }
+
+        .recording-time {
+            font-size: 24px;
+            font-weight: 600;
+            color: #000000;
+            margin: 20px 0;
+        }
+
+        .recording-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .recording-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .recording-btn.send {
+            background: linear-gradient(135deg, #0006B1 0%, #000580 100%);
+            color: #FFFFFF;
+        }
+
+        .recording-btn.cancel {
+            background: #f0f0f0;
+            color: #000000;
+        }
+
+        .recording-btn:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="content-wrapper">
+            <!-- Header Banner -->
+            <div class="header-banner">
+                <h1>👋 Hi there</h1>
+                <p>How can we help you today?</p>
+            </div>
+
+            <!-- Main Content Cards -->
+            <div class="cards-container">
+                <!-- FAQ Card -->
+                <div class="help-card">
+                    <h2>Frequently Asked Questions</h2>
+                    <ul class="faq-list" id="faqList">
+                        <li class="faq-item">
+                            <span>Loading FAQs...</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </li>
+                    </ul>
+                    <div class="search-container">
+                        <input type="text" class="search-bar" id="faqSearch" placeholder="Search our help desk for more...">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+                </div>
+
+                <!-- Services Card -->
+                <div class="help-card">
+                    <h2>Our Services</h2>
+                    <ul class="faq-list" id="serviceList">
+                        <li class="faq-item">
+                            <span>Loading Services...</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Contact Support Card -->
+            <div class="contact-card" onclick="openChatWidget()">
+                <div class="contact-info">
+                    <h3>Contact Novyra Support</h3>
+                    <p>Reach out to Novyra support team</p>
+                </div>
+                <i class="fas fa-arrow-right contact-arrow"></i>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                Powered by <strong>Novyra Marketing Agency</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Chat Button (shown only when embedded) -->
+    <button class="floating-chat-button" id="floatingChatButton" onclick="openChatWidget()" title="Chat with us">
+        <i class="fas fa-comments"></i>
+    </button>
+
+    <!-- Chat Widget -->
+    <div class="chat-widget" id="chatWidget">
+        <div class="chat-widget-header">
+            <button class="back-btn" onclick="closeChatWidget()" title="Close">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="bot-avatar" id="botAvatar">N</div>
+            <div class="bot-info">
+                <h3>Ariho (BOT)</h3>
+                <p id="botStatus">Hi there 👋, how can I assist you today?</p>
+            </div>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <!-- Messages will be added here -->
+        </div>
+
+        <div class="typing-indicator" id="typingIndicator">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+        </div>
+
+        <div class="input-form-container">
+            <form class="input-form" id="chatForm">
+                <textarea class="input-field" id="messageInput" placeholder="Message" rows="1" autocomplete="off"></textarea>
+                <div class="input-actions">
+                    <button type="button" class="action-btn" id="voiceBtn" title="Voice Note">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <button type="submit" class="send-btn" title="Send">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        let sessionId = null;
+        let customerInfo = {};
+        let faqs = [];
+        let services = [];
+        let commonQuestions = [];
+        let currentStep = 'welcome'; // 'welcome', 'name', 'email', 'chat'
+        let isRecording = false;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let recordingTimer = null;
+        let recordingStartTime = null;
+        let agentAvailable = true;
+        let businessHours = true;
+        let messageCount = 0;
+        let originalTitle = document.title;
+        let isPageVisible = true;
+        let loadingTimeout = null;
+        let botName = 'Ariho';
+        let assignedAgentName = null;
+        let assignedAgentUsername = null;
+        let messagePollInterval = null;
+        let lastMessageId = 0;
+        let displayedMessageIds = new Set(); // Track displayed messages to avoid duplicates
+
+        // Enhanced sound notifications for customers
+        let lastMessageTime = 0;
+        function playSound(type) {
+            // Prevent too many sounds
+            const now = Date.now();
+            if (now - lastMessageTime < 500) return;
+            lastMessageTime = now;
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                if (type === 'sent') {
+                    // Short high-pitched beep for sent
+                    oscillator.frequency.value = 800;
+                    oscillator.type = 'sine';
+                    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.1);
+                } else if (type === 'received') {
+                    // Two-tone chime for received
+                    oscillator.frequency.value = 600;
+                    oscillator.type = 'sine';
+                    gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.15);
+                } else if (type === 'message') {
+                    // Notification sound for new messages
+                    oscillator.frequency.value = 700;
+                    oscillator.type = 'sine';
+                    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.2);
+                } else if (type === 'agent') {
+                    // Special sound for agent connection - two-tone notification
+                    oscillator.frequency.value = 800;
+                    oscillator.type = 'sine';
+                    gainNode.gain.setValueAtTime(0.25, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.15);
+                    
+                    // Second tone after short delay
+                    setTimeout(() => {
+                        try {
+                            const osc2 = audioContext.createOscillator();
+                            const gain2 = audioContext.createGain();
+                            osc2.connect(gain2);
+                            gain2.connect(audioContext.destination);
+                            osc2.frequency.value = 1000;
+                            osc2.type = 'sine';
+                            gain2.gain.setValueAtTime(0.25, audioContext.currentTime);
+                            gain2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                            osc2.start(audioContext.currentTime);
+                            osc2.stop(audioContext.currentTime + 0.15);
+                        } catch (e) {}
+                    }, 150);
+                }
+            } catch (error) {
+                console.log('Sound notification not available:', error);
+            }
+        }
+        
+        // Request notification permission for customers
+        if ('Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                    console.log('Notification permission granted for customer');
+                }
+            });
+        }
+
+        // Browser tab notifications
+        function updateTabTitle(isNewMessage = false) {
+            if (isNewMessage && !isPageVisible) {
+                messageCount++;
+                document.title = `(${messageCount}) ${originalTitle}`;
+            } else if (isPageVisible) {
+                document.title = originalTitle;
+                messageCount = 0;
+            }
+        }
+
+        // Page visibility detection
+        document.addEventListener('visibilitychange', () => {
+            isPageVisible = !document.hidden;
+            if (isPageVisible) {
+                updateTabTitle(false);
+            }
+        });
+
+        // Loading overlay
+        function showLoadingOverlay(message = 'Loading...') {
+            let overlay = document.getElementById('loadingOverlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'loadingOverlay';
+                overlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.7);
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 99999;
+                    color: white;
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                `;
+                overlay.innerHTML = `
+                    <div class="spinner" style="
+                        width: 50px;
+                        height: 50px;
+                        border: 4px solid rgba(255, 255, 255, 0.3);
+                        border-top: 4px solid #0006B1;
+                        border-radius: 50%;
+                        animation: spin 1s linear infinite;
+                        margin-bottom: 20px;
+                    "></div>
+                    <div id="loadingMessage" style="font-size: 16px; font-weight: 500;">${message}</div>
+                    <style>
+                        @keyframes spin {
+                            0% { transform: rotate(0deg); }
+                            100% { transform: rotate(360deg); }
+                        }
+                    </style>
+                `;
+                document.body.appendChild(overlay);
+            } else {
+                overlay.style.display = 'flex';
+                document.getElementById('loadingMessage').textContent = message;
+            }
+            
+            // Auto-hide after 10 seconds (timeout protection)
+            if (loadingTimeout) clearTimeout(loadingTimeout);
+            loadingTimeout = setTimeout(() => {
+                hideLoadingOverlay();
+            }, 10000);
+        }
+
+        function hideLoadingOverlay() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) {
+                overlay.style.display = 'none';
+            }
+            if (loadingTimeout) {
+                clearTimeout(loadingTimeout);
+                loadingTimeout = null;
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadWidgetConfig();
+            loadFAQs();
+            loadServices();
+            loadCommonQuestions();
+            checkAgentAvailability();
+            
+            document.getElementById('chatForm').addEventListener('submit', handleChatSubmit);
+            document.getElementById('faqSearch').addEventListener('input', filterFAQs);
+            document.getElementById('voiceBtn').addEventListener('click', toggleVoiceRecording);
+            
+            // Ensure chat widget is hidden on page load
+            const chatWidget = document.getElementById('chatWidget');
+            if (chatWidget) {
+                chatWidget.style.display = 'none';
+                chatWidget.classList.remove('active');
+            }
+            
+            // Ensure input form is hidden initially
+            hideInputForm();
+            
+            // Auto-resize textarea
+            const textarea = document.getElementById('messageInput');
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+            });
+
+            // Fix Enter key behavior - Shift+Enter for new line, Enter to send
+            textarea.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    if (currentStep === 'chat' && this.value.trim()) {
+                        handleChatSubmit(e);
+                    }
+                }
+            });
+        });
+
+        // Check if page is embedded
+        function isEmbedded() {
+            // Check URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('embed') === 'true' || urlParams.get('embedded') === 'true') {
+                return true;
+            }
+            // Check if in iframe
+            if (window.self !== window.top) {
+                return true;
+            }
+            return false;
+        }
+
+        // Make openChatWidget globally accessible
+        window.openChatWidget = function openChatWidget() {
+            const chatWidget = document.getElementById('chatWidget');
+            const floatingButton = document.getElementById('floatingChatButton');
+            
+            if (!chatWidget) {
+                console.error('Chat widget not found');
+                return;
+            }
+            
+            // Ensure widget is visible
+            chatWidget.classList.add('active');
+            chatWidget.style.display = 'flex';
+            
+            // Hide floating button when widget is open
+            if (floatingButton) {
+                floatingButton.classList.remove('active');
+                floatingButton.style.display = 'none';
+            }
+            
+            // Show input form when widget opens
+            showInputForm();
+            
+            // If chat is empty, start the conversation
+            if (document.getElementById('chatMessages').children.length === 0) {
+                checkSession();
+            }
+            
+            // Focus on input field
+            setTimeout(() => {
+                const messageInput = document.getElementById('messageInput');
+                if (messageInput) {
+                    messageInput.focus();
+                }
+            }, 300);
+        };
+
+        // Make closeChatWidget globally accessible
+        window.closeChatWidget = function closeChatWidget() {
+            const chatWidget = document.getElementById('chatWidget');
+            const floatingButton = document.getElementById('floatingChatButton');
+            
+            if (!chatWidget) {
+                console.error('Chat widget not found');
+                return;
+            }
+            
+            chatWidget.classList.remove('active');
+            chatWidget.style.display = 'none';
+            currentStep = 'welcome';
+            
+            // Hide input form when closing
+            hideInputForm();
+            
+            // Show floating button again when widget is closed (if embedded)
+            if (isEmbedded() && floatingButton) {
+                floatingButton.classList.add('active');
+                floatingButton.style.display = 'flex';
+            }
+            
+            // Notify parent window if in iframe (for embed widget)
+            if (window.self !== window.top) {
+                try {
+                    window.parent.postMessage({ type: 'novyra-close-widget' }, '*');
+                } catch (e) {
+                    console.log('Could not send message to parent');
+                }
+            }
+            
+            // Stop polling when chat is closed
+            stopMessagePolling();
+            disconnectWebSocket();
+        };
+
+        function toggleChatWidget() {
+            const chatWidget = document.getElementById('chatWidget');
+            if (chatWidget.classList.contains('active')) {
+                closeChatWidget();
+            } else {
+                openChatWidget();
+            }
+        }
+        
+        // Initialize embedded mode
+        function initEmbeddedMode() {
+            // Add embedded mode class to body
+            document.body.classList.add('embedded-mode');
+            
+            // Hide main container
+            const mainContainer = document.querySelector('.main-container');
+            if (mainContainer) {
+                mainContainer.style.display = 'none';
+            }
+            
+            // If in iframe, show the chat widget directly (parent page has the button)
+            // If not in iframe but embedded, show floating button
+            const isInIframe = window.self !== window.top;
+            
+            if (isInIframe) {
+                // In iframe: Widget should be hidden initially - parent page controls visibility
+                document.body.classList.add('iframe-mode');
+                
+                const floatingButton = document.getElementById('floatingChatButton');
+                if (floatingButton) {
+                    floatingButton.style.display = 'none';
+                }
+                
+                // Keep chat widget hidden initially - parent will show it when button is clicked
+                const chatWidget = document.getElementById('chatWidget');
+                if (chatWidget) {
+                    chatWidget.style.display = 'none';
+                    chatWidget.classList.remove('active');
+                    chatWidget.style.position = 'relative';
+                    chatWidget.style.width = '100%';
+                    chatWidget.style.height = '100vh';
+                    chatWidget.style.bottom = 'auto';
+                    chatWidget.style.right = 'auto';
+                    chatWidget.style.left = 'auto';
+                    chatWidget.style.top = 'auto';
+                    chatWidget.style.borderRadius = '0';
+                    chatWidget.style.boxShadow = 'none';
+                    chatWidget.style.maxWidth = 'none';
+                    chatWidget.style.maxHeight = 'none';
+                    chatWidget.style.margin = '0';
+                    
+                    // Update back button to notify parent
+                    const backBtn = chatWidget.querySelector('.back-btn');
+                    if (backBtn) {
+                        backBtn.onclick = function(e) {
+                            e.preventDefault();
+                            // Notify parent to close widget
+                            if (window.parent && window.parent !== window) {
+                                try {
+                                    window.parent.postMessage({ type: 'novyra-close-widget' }, '*');
+                                } catch (e) {
+                                    console.log('Could not send message to parent');
+                                }
+                            }
+                            // Also close locally
+                            closeChatWidget();
+                        };
+                    }
+                }
+                
+                // Don't auto-start chat - wait for parent to call openChatWidget()
+            } else {
+                // Not in iframe: Show floating button (standalone embedded page)
+                const floatingButton = document.getElementById('floatingChatButton');
+                if (floatingButton) {
+                    floatingButton.classList.add('active');
+                    floatingButton.style.display = 'flex';
+                    
+                    // Apply button color from config if available
+                    var buttonColor = '{{ button_color|default:"#0006B1" }}';
+                    if (buttonColor && buttonColor !== '#0006B1') {
+                        floatingButton.style.background = buttonColor;
+                    }
+                    
+                    // Apply position from config
+                    var buttonPosition = '{{ button_position|default:"bottom-right" }}';
+                    var positionMap = {
+                        'bottom-right': { bottom: '25px', right: '25px' },
+                        'bottom-left': { bottom: '25px', left: '25px' },
+                        'top-right': { top: '25px', right: '25px' },
+                        'top-left': { top: '25px', left: '25px' }
+                    };
+                    var position = positionMap[buttonPosition] || positionMap['bottom-right'];
+                    Object.keys(position).forEach(function(key) {
+                        floatingButton.style[key] = position[key];
+                    });
+                }
+                
+                // Ensure chat widget is hidden initially
+                const chatWidget = document.getElementById('chatWidget');
+                if (chatWidget) {
+                    chatWidget.style.display = 'none';
+                    chatWidget.classList.remove('active');
+                    
+                    // Apply widget dimensions from config if available
+                    var widgetWidth = {% if widget_width %}{{ widget_width }}{% else %}380{% endif %};
+                    var widgetHeight = {% if widget_height %}{{ widget_height }}{% else %}600{% endif %};
+                    if (widgetWidth) {
+                        chatWidget.style.width = widgetWidth + 'px';
+                    }
+                    if (widgetHeight) {
+                        chatWidget.style.height = widgetHeight + 'px';
+                    }
+                }
+            }
+        }
+
+        // Check if embedded on page load
+        var isEmbeddedFlag = {% if is_embedded %}true{% else %}false{% endif %};
+        if (isEmbedded() || isEmbeddedFlag) {
+            // Run immediately if DOM is ready, otherwise wait
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initEmbeddedMode);
+            } else {
+                initEmbeddedMode();
+            }
+        }
+
+        // Get API base URL
+        const API_BASE_URL = '{{ api_base_url|default:"" }}' || window.location.origin;
+        
+        async function loadWidgetConfig() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/widget-config/`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.bot_name) {
+                        botName = data.bot_name;
+                        updateBotNameInUI();
+                    }
+                    if (data.bot_profile_image) {
+                        updateBotProfileImage(data.bot_profile_image);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading widget config:', error);
+            }
+        }
+        
+        function updateBotNameInUI() {
+            // Update bot name in header
+            const botInfoH3 = document.querySelector('.bot-info h3');
+            if (botInfoH3) {
+                botInfoH3.textContent = `${botName} (BOT)`;
+            }
+        }
+        
+        function updateBotProfileImage(imageUrl) {
+            // Update bot avatar with profile image
+            const botAvatar = document.getElementById('botAvatar') || document.querySelector('.bot-avatar');
+            if (botAvatar && imageUrl) {
+                // Replace text avatar with image
+                botAvatar.innerHTML = `<img src="${imageUrl}" alt="Bot" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+                botAvatar.style.background = 'transparent';
+            }
+        }
+        
+        function checkSession() {
+            sessionId = localStorage.getItem('chat_session_id');
+            
+            // Clear any existing messages first
+            const messagesDiv = document.getElementById('chatMessages');
+            if (messagesDiv) {
+                messagesDiv.innerHTML = '';
+            }
+            
+            // Start with welcome message and options - don't ask for name/email upfront
+            addBotMessage(`Welcome to Novyra Marketing! 👋 I'm ${botName}, your virtual assistant.`);
+            setTimeout(() => {
+                addBotMessage("How can I help you today?");
+                setTimeout(() => {
+                    showMainOptions();
+                    // Show input form after showing options
+                    showInputForm();
+                }, 500);
+            }, 500);
+            currentStep = 'welcome';
+        }
+        
+        function showInputForm() {
+            const inputForm = document.querySelector('.input-form-container');
+            if (inputForm) {
+                inputForm.style.display = 'block';
+                inputForm.classList.add('show');
+                // Focus on input
+                setTimeout(() => {
+                    const messageInput = document.getElementById('messageInput');
+                    if (messageInput) messageInput.focus();
+                }, 100);
+            }
+        }
+        
+        function hideInputForm() {
+            const inputForm = document.querySelector('.input-form-container');
+            if (inputForm) {
+                inputForm.style.display = 'none';
+                inputForm.classList.remove('show');
+            }
+        }
+
+        function askForName() {
+            currentStep = 'name';
+            addBotMessage("Welcome to Novyra! I'm Ariho, your virtual assistant.");
+            setTimeout(() => {
+                addBotMessage("How would you like to be addressed?");
+                addNameInput();
+            }, 500);
+        }
+
+        function addNameInput() {
+            const messagesDiv = document.getElementById('chatMessages');
+            const inputContainer = document.createElement('div');
+            inputContainer.className = 'message ai';
+            inputContainer.innerHTML = `
+                <div style="width: 100%;">
+                    <input type="text" id="nameInput" class="input-field" placeholder="Enter your name" style="width: 100%; margin-top: 8px;">
+                    <button onclick="submitName()" style="margin-top: 8px; padding: 8px 16px; background: #0006B1; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        Submit <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            `;
+            messagesDiv.appendChild(inputContainer);
+            document.getElementById('nameInput').focus();
+            document.getElementById('nameInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') submitName();
+            });
+        }
+
+        function submitName() {
+            const nameInput = document.getElementById('nameInput');
+            const name = nameInput.value.trim();
+            if (!name) return;
+            
+            customerInfo.name = name;
+            addUserMessage(name);
+            setTimeout(() => {
+                askForEmail();
+            }, 500);
+        }
+
+        function askForEmail() {
+            currentStep = 'email';
+            showTyping();
+            setTimeout(() => {
+                hideTyping();
+                addBotMessage(`Nice to meet you, ${customerInfo.name}!`);
+                setTimeout(() => {
+                    addBotMessage("What's your email address?");
+                    addEmailInput();
+                }, 500);
+            }, 1000);
+        }
+
+        function addEmailInput() {
+            const messagesDiv = document.getElementById('chatMessages');
+            const inputContainer = document.createElement('div');
+            inputContainer.className = 'message ai';
+            inputContainer.innerHTML = `
+                <div style="width: 100%;">
+                    <input type="email" id="emailInput" class="input-field" placeholder="Enter your Email address" style="width: 100%; margin-top: 8px;">
+                    <button onclick="submitEmail()" style="margin-top: 8px; padding: 8px 16px; background: #0006B1; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        Submit <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            `;
+            messagesDiv.appendChild(inputContainer);
+            document.getElementById('emailInput').focus();
+            document.getElementById('emailInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') submitEmail();
+            });
+        }
+
+        function submitEmail() {
+            const emailInput = document.getElementById('emailInput');
+            const email = emailInput.value.trim();
+            if (!email || !email.includes('@')) {
+                alert('Please enter a valid email address');
+                return;
+            }
+            
+            customerInfo.email = email;
+            localStorage.setItem('customer_info', JSON.stringify(customerInfo));
+            addUserMessage(email);
+            setTimeout(() => {
+                startConversation();
+            }, 500);
+        }
+
+        function startConversation() {
+            currentStep = 'chat';
+            showTyping();
+            setTimeout(() => {
+                hideTyping();
+                addBotMessage(`Hello ${customerInfo.name}! How can we assist you?`);
+                setTimeout(() => {
+                    showMainOptions();
+                }, 500);
+            }, 1000);
+        }
+
+        function showMainOptions() {
+            const messagesDiv = document.getElementById('chatMessages');
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = 'message ai';
+            optionsContainer.innerHTML = `
+                <div style="width: 100%;">
+                    <div class="option-buttons">
+                        <button class="option-button" onclick="selectMainOption('pricing')">
+                            💰 Pricing & Plans
+                        </button>
+                        <button class="option-button" onclick="selectMainOption('services')">
+                            🛠️ Our Services
+                        </button>
+                        <button class="option-button" onclick="selectMainOption('about')">
+                            ℹ️ About Us
+                        </button>
+                        <button class="option-button" onclick="selectMainOption('contact')">
+                            📞 Contact Support
+                        </button>
+                        <button class="option-button" onclick="selectMainOption('faq')">
+                            ❓ Frequently Asked Questions
+                        </button>
+                        <button class="option-button" onclick="selectMainOption('other')">
+                            💬 Other Questions
+                        </button>
+                    </div>
+                </div>
+            `;
+            messagesDiv.appendChild(optionsContainer);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function selectMainOption(option) {
+            const optionTexts = {
+                'pricing': 'Pricing & Plans',
+                'services': 'Our Services',
+                'about': 'About Us',
+                'contact': 'Contact Support',
+                'faq': 'Frequently Asked Questions',
+                'other': 'Other Questions'
+            };
+            
+            addUserMessage(optionTexts[option]);
+            showTyping();
+            
+            if (option === 'pricing') {
+                // Fetch pricing from API
+                fetch(`${API_BASE_URL}/api/pricing/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        hideTyping();
+                        if (data.pricing) {
+                            addBotMessage(data.pricing);
+                            setTimeout(() => {
+                                // Show interactive suggestions after pricing
+                                showPricingSuggestions();
+                            }, 800);
+                        } else {
+                            addBotMessage("I'd be happy to help you with pricing information. Please contact us for detailed pricing plans.");
+                            setTimeout(() => {
+                                showPricingSuggestions();
+                            }, 800);
+                        }
+                    })
+                    .catch(error => {
+                        hideTyping();
+                        console.error('Error loading pricing:', error);
+                        addBotMessage("I'd be happy to help you with pricing information. Please contact us for detailed pricing plans.");
+                        setTimeout(() => {
+                            showPricingSuggestions();
+                        }, 800);
+                    });
+            } else if (option === 'services') {
+                // Fetch detailed services from API
+                fetch(`${API_BASE_URL}/api/services/detailed/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        hideTyping();
+                        if (data.services && data.services.length > 0) {
+                            let servicesText = "Novyra Marketing offers five key end-to-end solutions:\n\n";
+                            data.services.forEach((service, index) => {
+                                servicesText += `${index + 1}. ${service.title}\n${service.content}\n\n`;
+                            });
+                            addBotMessage(servicesText);
+                            setTimeout(() => {
+                                showServiceOptionsButtons(data.services);
+                                // Also show other suggestions
+                                setTimeout(() => {
+                                    showServiceSuggestions();
+                                }, 600);
+                            }, 500);
+                        } else {
+                            addBotMessage("We offer comprehensive marketing services. Which service interests you most?");
+                            showServiceOptions();
+                            setTimeout(() => {
+                                showServiceSuggestions();
+                            }, 600);
+                        }
+                    })
+                    .catch(error => {
+                        hideTyping();
+                        console.error('Error loading services:', error);
+                        addBotMessage("We offer comprehensive marketing services. Which service interests you most?");
+                        showServiceOptions();
+                        setTimeout(() => {
+                            showServiceSuggestions();
+                        }, 600);
+                    });
+            } else if (option === 'about') {
+                setTimeout(() => {
+                    hideTyping();
+                    addBotMessage("Novyra Marketing is a leading digital marketing agency dedicated to helping businesses grow their online presence. We specialize in innovative marketing strategies, creative solutions, and data-driven results. We offer five key end-to-end solutions: Social Media Marketing, Branding, Digital Campaigns, Content Strategy, and Advertising (Paid Media). What would you like to know more about?");
+                    setTimeout(() => {
+                        currentStep = 'chat';
+                        showInputForm();
+                    }, 500);
+                }, 1000);
+            } else if (option === 'contact') {
+                requestAgent();
+            } else if (option === 'faq') {
+                setTimeout(() => {
+                    hideTyping();
+                    showCommonQuestions();
+                }, 1000);
+            } else if (option === 'other') {
+                setTimeout(() => {
+                    hideTyping();
+                    addBotMessage("I'm here to help with any questions you have! Please feel free to ask, and I'll do my best to assist you.");
+                    setTimeout(() => {
+                        currentStep = 'chat';
+                        showInputForm();
+                    }, 500);
+                }, 1000);
+            }
+        }
+        
+        function showServiceOptionsButtons(services) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = 'message ai';
+            optionsContainer.innerHTML = `
+                <div style="width: 100%;">
+                    <div class="option-buttons">
+                        ${services.map(service => `
+                            <button class="option-button" onclick="selectServiceDetail('${service.key}')">
+                                ${service.title}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            messagesDiv.appendChild(optionsContainer);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        
+        function selectServiceDetail(serviceKey) {
+            fetch(`${API_BASE_URL}/api/services/detailed/`)
+                .then(response => response.json())
+                .then(data => {
+                    const service = data.services.find(s => s.key === serviceKey);
+                    if (service) {
+                        addUserMessage(service.title);
+                        setTimeout(() => {
+                            showTyping();
+                            setTimeout(() => {
+                                hideTyping();
+                                addBotMessage(service.content);
+                                setTimeout(() => {
+                                    // Show suggestions after service detail
+                                    showServiceDetailSuggestions(serviceKey, data.services);
+                                }, 800);
+                            }, 1000);
+                        }, 500);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading service detail:', error);
+                });
+        }
+        
+        function showPricingSuggestions() {
+            const messagesDiv = document.getElementById('chatMessages');
+            const suggestionsContainer = document.createElement('div');
+            suggestionsContainer.className = 'message ai';
+            suggestionsContainer.innerHTML = `
+                <div style="width: 100%;">
+                    <div style="margin-bottom: 8px; font-size: 13px; color: #666; font-weight: 500;">💡 You might also want to know:</div>
+                    <div class="option-buttons">
+                        <button class="option-button" onclick="selectMainOption('services')">
+                            📋 Our Services
+                        </button>
+                        <button class="option-button" onclick="selectMainOption('about')">
+                            ℹ️ About Us
+                        </button>
+                        <button class="option-button" onclick="selectMainOption('contact')">
+                            📞 Contact Support
+                        </button>
+                        <button class="option-button" onclick="selectMainOption('faq')">
+                            ❓ FAQs
+                        </button>
+                    </div>
+                </div>
+            `;
+            messagesDiv.appendChild(suggestionsContainer);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            currentStep = 'chat';
+            showInputForm();
+        }
+        
+        function showServiceSuggestions() {
+            const messagesDiv = document.getElementById('chatMessages');
+            const suggestionsContainer = document.createElement('div');
+            suggestionsContainer.className = 'message ai';
+            suggestionsContainer.innerHTML = `
+                <div style="width: 100%;">
+                    <div style="margin-bottom: 8px; font-size: 13px; color: #666; font-weight: 500;">💡 Explore more:</div>
+                    <div class="option-buttons">
+                        <button class="option-button" onclick="selectMainOption('pricing')">
+                            💰 Pricing & Plans
+                        </button>
+                        <button class="option-button" onclick="selectMainOption('about')">
+                            ℹ️ About Us
+                        </button>
+                        <button class="option-button" onclick="selectMainOption('contact')">
+                            📞 Get Started
+                        </button>
+                    </div>
+                </div>
+            `;
+            messagesDiv.appendChild(suggestionsContainer);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            currentStep = 'chat';
+            showInputForm();
+        }
+        
+        function showServiceDetailSuggestions(selectedServiceKey, allServices) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const otherServices = allServices.filter(s => s.key !== selectedServiceKey);
+            const suggestionsContainer = document.createElement('div');
+            suggestionsContainer.className = 'message ai';
+            
+            let buttonsHTML = '';
+            if (otherServices.length > 0) {
+                buttonsHTML = otherServices.slice(0, 3).map(service => `
+                    <button class="option-button" onclick="selectServiceDetail('${service.key}')">
+                        ${service.title}
+                    </button>
+                `).join('');
+            }
+            
+            suggestionsContainer.innerHTML = `
+                <div style="width: 100%;">
+                    <div style="margin-bottom: 8px; font-size: 13px; color: #666; font-weight: 500;">💡 Check out our other services:</div>
+                    <div class="option-buttons">
+                        ${buttonsHTML}
+                        <button class="option-button" onclick="selectMainOption('pricing')">
+                            💰 View Pricing
+                        </button>
+                        <button class="option-button" onclick="selectMainOption('contact')">
+                            📞 Contact Us
+                        </button>
+                    </div>
+                </div>
+            `;
+            messagesDiv.appendChild(suggestionsContainer);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            currentStep = 'chat';
+            showInputForm();
+        }
+
+        function showServiceOptions() {
+            if (services.length === 0) {
+                loadServices().then(() => {
+                    if (services.length > 0) {
+                        displayServiceOptions();
+                    }
+                });
+            } else {
+                displayServiceOptions();
+            }
+        }
+
+        function displayServiceOptions() {
+            const messagesDiv = document.getElementById('chatMessages');
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = 'message ai';
+            optionsContainer.innerHTML = `
+                <div style="width: 100%;">
+                    <div class="option-buttons">
+                        ${services.slice(0, 5).map(service => `
+                            <button class="option-button" onclick="selectQuestion(${service.id})">
+                                ${service.title}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            messagesDiv.appendChild(optionsContainer);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function showCommonQuestions() {
+            if (commonQuestions.length === 0) {
+                loadCommonQuestions().then(() => {
+                    if (commonQuestions.length > 0) {
+                        displayCommonQuestions();
+                    }
+                    // Removed duplicate prompt - user already has context
+                });
+            } else {
+                displayCommonQuestions();
+            }
+        }
+
+        function displayCommonQuestions() {
+            const messagesDiv = document.getElementById('chatMessages');
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = 'message ai';
+            optionsContainer.innerHTML = `
+                <div style="width: 100%;">
+                    <div class="option-buttons">
+                        ${commonQuestions.map(q => `
+                            <button class="option-button" onclick="selectQuestion(${q.id})">
+                                ${q.title}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            messagesDiv.appendChild(optionsContainer);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function selectQuestion(questionId) {
+            const question = commonQuestions.find(q => q.id === questionId) || 
+                           faqs.find(f => f.id === questionId);
+            if (question) {
+                addUserMessage(question.title);
+                setTimeout(() => {
+                    showTyping();
+                    setTimeout(() => {
+                        hideTyping();
+                        addBotMessage(question.content);
+                        setTimeout(() => {
+                            addBotMessage("Is there anything else I can help you with?");
+                            // Enable chat input for follow-up questions
+                            currentStep = 'chat';
+                            showInputForm();
+                        }, 500);
+                    }, 1000);
+                }, 500);
+            }
+        }
+
+        async function requestAgent() {
+            addUserMessage("Contact Support");
+            showTyping();
+            
+            // Check agent availability and business hours
+            await checkAgentAvailability();
+            
+            setTimeout(() => {
+                hideTyping();
+                
+                if (!businessHours) {
+                    // Outside business hours
+                    addBotMessage("⏰ We're currently closed. Our business hours are Monday to Saturday, 9:00 AM to 6:00 PM (WAT).\n\n📧 Our agents will reach out to you via email as soon as we're open. Please leave your message below and we'll get back to you during business hours!");
+                    setTimeout(() => {
+                        collectCustomerInfoForMessage();
+                    }, 500);
+                } else if (!agentAvailable) {
+                    // Business hours but no agents available
+                    addBotMessage("Thank you for reaching out! All our agents are currently busy helping other customers.\n\n📧 Please leave a detailed message below, and we'll respond to you via email as soon as an agent becomes available. We typically respond within a few hours during business hours!");
+                    setTimeout(() => {
+                        collectCustomerInfoForMessage();
+                    }, 500);
+                } else {
+                    // Agents available during business hours - connect immediately
+                    // Don't show connecting message - just connect silently
+                    showTyping();
+                    
+                    // Actually connect to agent via API
+                    connectToAgent();
+                }
+            }, 1000);
+        }
+        
+        async function connectToAgent() {
+            try {
+                // Send a message to trigger agent assignment
+                const response = await fetch(`${API_BASE_URL}/api/chat/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken') || ''
+                    },
+                    body: JSON.stringify({
+                        session_id: getSessionId(),
+                        message: 'I need to speak with an agent',
+                        customer_name: customerInfo.name,
+                        customer_email: customerInfo.email,
+                        customer_phone: customerInfo.phone
+                    })
+                });
+                
+                const data = await response.json();
+                hideTyping();
+                
+                // Load existing messages first
+                await loadExistingMessages();
+                
+                if (data.assigned_agent_name || data.assigned_agent) {
+                    // Check if agent was just assigned or already assigned
+                    const wasAlreadyAssigned = assignedAgentName !== null;
+                    
+                    assignedAgentName = data.assigned_agent_name || data.assigned_agent;
+                    assignedAgentUsername = data.assigned_agent;
+                    const agentProfilePicture = data.assigned_agent_profile_picture || null;
+                    
+                    // Update chat header to show agent name and profile picture
+                    updateChatHeaderForAgent(assignedAgentName, agentProfilePicture);
+                    
+                    // Only show connection message if agent was just assigned (not already assigned)
+                    if (!wasAlreadyAssigned) {
+                        // Don't show automatic connection message - let them chat directly
+                        // Just update the header and start polling
+                    }
+                    
+                    currentStep = 'chat';
+                    showInputForm();
+                    // Start polling for new messages
+                    startMessagePolling();
+                } else if (data.status === 'waiting_agent') {
+                    addBotMessage("All our agents are currently busy. Your chat is in queue and an agent will be with you shortly. Please leave your message below.");
+                    currentStep = 'chat';
+                    showInputForm();
+                    // Start polling in case agent gets assigned
+                    startMessagePolling();
+                } else {
+                    // No agent assigned yet - this shouldn't happen in connectToAgent, but handle it
+                    currentStep = 'chat';
+                    showInputForm();
+                    // Start polling for new messages
+                    startMessagePolling();
+                }
+            } catch (error) {
+                hideTyping();
+                console.error('Error connecting to agent:', error);
+                currentStep = 'chat';
+                showInputForm();
+                // Start polling even if there's an error
+                startMessagePolling();
+            }
+        }
+        
+        // Load existing messages from the session (only track IDs, don't display)
+        async function loadExistingMessages() {
+            try {
+                const currentSessionId = getSessionId();
+                if (!currentSessionId) return;
+                
+                const response = await fetch(`${API_BASE_URL}/api/chat/${currentSessionId}/messages/`);
+                if (!response.ok) return;
+                
+                const data = await response.json();
+                if (data.messages && Array.isArray(data.messages)) {
+                    // Sort messages by ID to ensure correct order
+                    const sortedMessages = data.messages.sort((a, b) => a.id - b.id);
+                    
+                    // Track all message IDs (don't display, just track to avoid duplicates)
+                    sortedMessages.forEach(message => {
+                        // Track the highest message ID
+                        if (message.id > lastMessageId) {
+                            lastMessageId = message.id;
+                        }
+                        displayedMessageIds.add(message.id);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading existing messages:', error);
+            }
+        }
+        
+        // Poll for new messages from agents
+        async function pollForNewMessages() {
+            try {
+                const currentSessionId = getSessionId();
+                if (!currentSessionId || currentStep !== 'chat') {
+                    return;
+                }
+                
+                const response = await fetch(`${API_BASE_URL}/api/chat/${currentSessionId}/messages/`);
+                if (!response.ok) return;
+                
+                const data = await response.json();
+                if (data.messages && Array.isArray(data.messages)) {
+                    // Filter for new messages (agent messages that haven't been displayed)
+                    // Exclude system messages - they're for internal tracking only
+                    const newMessages = data.messages.filter(message => {
+                        return message.id > lastMessageId && 
+                               !displayedMessageIds.has(message.id) &&
+                               message.message_type !== 'system' &&
+                               (message.message_type === 'agent' || message.message_type === 'ai' || message.message_type === 'user');
+                    });
+                    
+                    // Display new messages
+                    newMessages.forEach(message => {
+                        displayedMessageIds.add(message.id);
+                        if (message.id > lastMessageId) {
+                            lastMessageId = message.id;
+                        }
+                        
+                        // Display agent messages with profile pictures and seen indicators
+                        if (message.message_type === 'agent') {
+                            addBotMessage(
+                                message.content, 
+                                'agent', 
+                                message.attachment_url, 
+                                message.attachment_type,
+                                message.sender_profile_picture || null,
+                                message.is_read || false,
+                                message.read_by_profile_picture || null,
+                                message.read_by_name || null
+                            );
+                        } else if (message.message_type === 'ai') {
+                            addBotMessage(
+                                message.content, 
+                                'ai', 
+                                message.attachment_url, 
+                                message.attachment_type,
+                                message.sender_profile_picture || null,
+                                message.is_read || false,
+                                message.read_by_profile_picture || null,
+                                message.read_by_name || null
+                            );
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error polling for messages:', error);
+            }
+        }
+        
+        // Start message polling
+        function startMessagePolling() {
+            // Stop any existing polling
+            stopMessagePolling();
+            
+            // Poll every 2 seconds for new messages
+            messagePollInterval = setInterval(() => {
+                pollForNewMessages();
+            }, 2000);
+        }
+        
+        // WebSocket connection for real-time messages
+        let chatWebSocket = null;
+        
+        function connectWebSocket() {
+            const currentSessionId = getSessionId();
+            if (!currentSessionId || chatWebSocket) return;
+            
+            // Determine WebSocket URL
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${protocol}//${window.location.host}/ws/chat/${currentSessionId}/`;
+            
+            try {
+                chatWebSocket = new WebSocket(wsUrl);
+                
+                chatWebSocket.onopen = function() {
+                    console.log('WebSocket connected');
+                };
+                
+                chatWebSocket.onmessage = function(event) {
+                    const data = JSON.parse(event.data);
+                    
+                    // Handle agent connection notification
+                    if (data.type === 'agent_connected') {
+                        if (!assignedAgentName) {
+                            assignedAgentName = data.agent_name || 'Agent';
+                            assignedAgentUsername = data.agent_username;
+                            updateChatHeaderForAgent(assignedAgentName, null);
+                            addBotMessage(data.message || `✅ Great! I've connected you with ${assignedAgentName}. They'll be with you shortly.\n\n💬 You can start chatting now - your agent will see your messages!`, 'ai');
+                            playSound('agent');
+                            
+                            if ('Notification' in window && Notification.permission === 'granted') {
+                                new Notification('Agent Connected', {
+                                    body: `You've been connected with ${assignedAgentName}`
+                                });
+                            }
+                        }
+                    }
+                    // Handle new messages (agent or AI)
+                    else if (data.message && (data.message_type === 'agent' || data.message_type === 'ai')) {
+                        // Check if message already displayed
+                        if (data.message_id && !displayedMessageIds.has(data.message_id)) {
+                            displayedMessageIds.add(data.message_id);
+                            if (data.message_id > lastMessageId) {
+                                lastMessageId = data.message_id;
+                            }
+                            
+                            if (data.message_type === 'agent') {
+                                addAgentMessage(
+                                    data.message,
+                                    data.sender_name || assignedAgentName || 'Agent',
+                                    null,
+                                    null,
+                                    data.sender_profile_picture || null
+                                );
+                            } else {
+                                addBotMessage(data.message, 'ai', null, null, data.sender_profile_picture);
+                            }
+                            playSound('message');
+                        }
+                    }
+                };
+                
+                chatWebSocket.onerror = function(error) {
+                    console.error('WebSocket error:', error);
+                    // Fallback to polling if WebSocket fails
+                };
+                
+                chatWebSocket.onclose = function() {
+                    console.log('WebSocket closed');
+                    chatWebSocket = null;
+                    // Reconnect after 3 seconds
+                    setTimeout(() => {
+                        if (assignedAgentName) {
+                            connectWebSocket();
+                        }
+                    }, 3000);
+                };
+            } catch (error) {
+                console.error('Error connecting WebSocket:', error);
+                // Fallback to polling
+            }
+        }
+        
+        function disconnectWebSocket() {
+            if (chatWebSocket) {
+                chatWebSocket.close();
+                chatWebSocket = null;
+            }
+        }
+        
+        // Stop message polling
+        function stopMessagePolling() {
+            if (messagePollInterval) {
+                clearInterval(messagePollInterval);
+                messagePollInterval = null;
+            }
+        }
+        
+        function updateChatHeaderForAgent(agentName, agentProfilePicture = null) {
+            const botInfoH3 = document.querySelector('.bot-info h3');
+            const botInfoP = document.querySelector('.bot-info p');
+            const botAvatar = document.getElementById('botAvatar') || document.querySelector('.bot-avatar');
+            
+            if (botInfoH3) {
+                botInfoH3.textContent = agentName;
+            }
+            if (botInfoP) {
+                botInfoP.textContent = 'Online • Typing...';
+            }
+            
+            // Update avatar with agent profile picture
+            if (botAvatar && agentProfilePicture) {
+                // Create img element if it doesn't exist
+                let avatarImg = botAvatar.querySelector('img');
+                if (!avatarImg) {
+                    // Remove text content
+                    botAvatar.textContent = '';
+                    // Create img element
+                    avatarImg = document.createElement('img');
+                    avatarImg.style.width = '100%';
+                    avatarImg.style.height = '100%';
+                    avatarImg.style.borderRadius = '50%';
+                    avatarImg.style.objectFit = 'cover';
+                    botAvatar.appendChild(avatarImg);
+                }
+                avatarImg.src = agentProfilePicture;
+                avatarImg.alt = agentName;
+                avatarImg.onerror = function() {
+                    // If image fails to load, show first letter of agent name
+                    botAvatar.textContent = agentName ? agentName.charAt(0).toUpperCase() : 'A';
+                    if (avatarImg) {
+                        avatarImg.style.display = 'none';
+                    }
+                };
+            } else if (botAvatar && !agentProfilePicture) {
+                // No profile picture - show first letter of agent name
+                botAvatar.textContent = agentName ? agentName.charAt(0).toUpperCase() : 'A';
+                // Remove any img element
+                const avatarImg = botAvatar.querySelector('img');
+                if (avatarImg) {
+                    avatarImg.remove();
+                }
+            }
+        }
+        
+        function updateChatHeaderForBot() {
+            const botInfoH3 = document.querySelector('.bot-info h3');
+            const botInfoP = document.querySelector('.bot-info p');
+            if (botInfoH3) {
+                botInfoH3.textContent = `${botName} (BOT)`;
+            }
+            if (botInfoP) {
+                botInfoP.textContent = 'Hi there 👋, how can I assist you today?';
+            }
+        }
+        
+        function collectCustomerInfoForMessage() {
+            // Hide input form first
+            hideInputForm();
+            
+            // Check if we already have customer info
+            const savedInfo = localStorage.getItem('customer_info');
+            if (savedInfo) {
+                try {
+                    customerInfo = JSON.parse(savedInfo);
+                    if (customerInfo.name && customerInfo.email) {
+                        // We have info, show message input
+                        addBotMessage(`Thanks ${customerInfo.name}! Please leave your message below and we'll get back to you via email.`);
+                        showMessageInputForm();
+                        return;
+                    }
+                } catch (e) {
+                    // Invalid data, collect again
+                }
+            }
+            
+            // Collect name
+            currentStep = 'collecting_name';
+            addBotMessage("To ensure we can reach you, please provide your name:");
+            addNameInputForMessage();
+        }
+        
+        function addNameInputForMessage() {
+            const messagesDiv = document.getElementById('chatMessages');
+            const inputContainer = document.createElement('div');
+            inputContainer.className = 'message ai';
+            inputContainer.id = 'nameInputContainer';
+            inputContainer.innerHTML = `
+                <div style="width: 100%;">
+                    <input type="text" id="nameInputForMessage" class="input-field" placeholder="Enter your name" style="width: 100%; margin-top: 8px; padding: 10px; border: 1px solid #e0e0e0; border-radius: 8px;">
+                </div>
+            `;
+            messagesDiv.appendChild(inputContainer);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            
+            const nameInput = document.getElementById('nameInputForMessage');
+            nameInput.focus();
+            nameInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && nameInput.value.trim()) {
+                    submitNameForMessage();
+                }
+            });
+        }
+        
+        function submitNameForMessage() {
+            const nameInput = document.getElementById('nameInputForMessage');
+            const name = nameInput.value.trim();
+            if (!name) return;
+            
+            customerInfo.name = name;
+            addUserMessage(name);
+            
+            // Remove name input
+            const nameContainer = document.getElementById('nameInputContainer');
+            if (nameContainer) nameContainer.remove();
+            
+            // Collect email
+            currentStep = 'collecting_email';
+            setTimeout(() => {
+                addBotMessage("Perfect! Now please provide your email address:");
+                addEmailInputForMessage();
+            }, 500);
+        }
+        
+        function addEmailInputForMessage() {
+            const messagesDiv = document.getElementById('chatMessages');
+            const inputContainer = document.createElement('div');
+            inputContainer.className = 'message ai';
+            inputContainer.id = 'emailInputContainer';
+            inputContainer.innerHTML = `
+                <div style="width: 100%;">
+                    <input type="email" id="emailInputForMessage" class="input-field" placeholder="Enter your email" style="width: 100%; margin-top: 8px; padding: 10px; border: 1px solid #e0e0e0; border-radius: 8px;">
+                </div>
+            `;
+            messagesDiv.appendChild(inputContainer);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            
+            const emailInput = document.getElementById('emailInputForMessage');
+            emailInput.focus();
+            emailInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && emailInput.value.trim()) {
+                    submitEmailForMessage();
+                }
+            });
+        }
+        
+        function submitEmailForMessage() {
+            const emailInput = document.getElementById('emailInputForMessage');
+            const email = emailInput.value.trim();
+            if (!email || !email.includes('@')) {
+                addBotMessage("Please enter a valid email address.");
+                return;
+            }
+            
+            customerInfo.email = email;
+            addUserMessage(email);
+            localStorage.setItem('customer_info', JSON.stringify(customerInfo));
+            
+            // Remove email input
+            const emailContainer = document.getElementById('emailInputContainer');
+            if (emailContainer) emailContainer.remove();
+            
+            // Show message input form
+            setTimeout(() => {
+                addBotMessage(`Thank you, ${customerInfo.name}! Please leave your detailed message below and we'll get back to you via email.`);
+                showMessageInputForm();
+            }, 500);
+        }
+        
+        function showMessageInputForm() {
+            currentStep = 'leaving_message';
+            showInputForm();
+        }
+
+        function addMessageInput() {
+            const messagesDiv = document.getElementById('chatMessages');
+            const inputContainer = document.createElement('div');
+            inputContainer.className = 'message ai';
+            inputContainer.innerHTML = `
+                <div style="width: 100%;">
+                    <textarea id="leaveMessageInput" class="input-field" placeholder="Type your request here and click the Submit icon" rows="3" style="width: 100%; margin-top: 8px;"></textarea>
+                    <button onclick="submitLeaveMessage()" style="margin-top: 8px; padding: 8px 16px; background: #0006B1; color: white; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-paper-plane"></i> Submit
+                    </button>
+                </div>
+            `;
+            messagesDiv.appendChild(inputContainer);
+            document.getElementById('leaveMessageInput').focus();
+        }
+
+        function submitLeaveMessage() {
+            const messageInput = document.getElementById('leaveMessageInput');
+            const message = messageInput.value.trim();
+            if (!message) return;
+            
+            addUserMessage(message);
+            messageInput.value = '';
+            showTyping();
+            
+            // Add timeout for poor internet
+            const timeoutId = setTimeout(() => {
+                hideTyping();
+                showLoadingOverlay('Saving your message... Please wait.');
+            }, 5000);
+            
+            // Create ticket
+            fetch(`${API_BASE_URL}/api/tickets/create/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken') || ''
+                },
+                body: JSON.stringify({
+                    session_id: getSessionId(),
+                    title: `Support Request from ${customerInfo.name || 'Customer'}`,
+                    description: message,
+                    priority: 'medium'
+                })
+            })
+            .then(response => {
+                clearTimeout(timeoutId);
+                hideLoadingOverlay();
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                hideTyping();
+                if (data.ticket_number) {
+                    addBotMessage(`✅ Thank you! Your message has been received. We've created ticket ${data.ticket_number} and will respond to you via email at ${customerInfo.email} within 24 hours.`);
+                } else {
+                    addBotMessage("✅ Thank you! Your message has been received. We'll respond to you via email shortly.");
+                }
+            })
+            .catch(error => {
+                clearTimeout(timeoutId);
+                hideLoadingOverlay();
+                hideTyping();
+                console.error('Ticket creation error:', error);
+                
+                // Still show success message even if ticket creation fails (graceful degradation)
+                addBotMessage(`✅ Thank you, ${customerInfo.name || 'there'}! Your message has been received. We'll respond to you via email at ${customerInfo.email} as soon as possible.`);
+            });
+        }
+
+        async function loadFAQs() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/faqs/`);
+                if (response.ok) {
+                    faqs = await response.json();
+                    renderFAQs();
+                }
+            } catch (error) {
+                console.error('Error loading FAQs:', error);
+            }
+        }
+
+        async function loadServices() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/services/`);
+                if (response.ok) {
+                    services = await response.json();
+                    renderServices();
+                }
+            } catch (error) {
+                console.error('Error loading services:', error);
+            }
+        }
+
+        async function loadCommonQuestions() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/common-questions/`);
+                if (response.ok) {
+                    commonQuestions = await response.json();
+                }
+            } catch (error) {
+                console.error('Error loading common questions:', error);
+            }
+        }
+
+        async function checkAgentAvailability() {
+            try {
+                // Create abort controller for timeout
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                
+                const response = await fetch(`${API_BASE_URL}/api/agent-availability/`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    agentAvailable = data.agents_available || false;
+                    businessHours = data.business_hours !== undefined ? data.business_hours : true;
+                } else {
+                    // Default to available if API fails
+                    agentAvailable = true;
+                    businessHours = true;
+                }
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    console.log('Agent availability check timed out');
+                } else {
+                    console.error('Error checking availability:', error);
+                }
+                // Default to available if check fails (graceful degradation)
+                agentAvailable = true;
+                businessHours = true;
+            }
+        }
+
+        function renderFAQs() {
+            const faqList = document.getElementById('faqList');
+            if (faqs.length === 0) {
+                faqList.innerHTML = '<li class="faq-item"><span>No FAQs available</span></li>';
+                return;
+            }
+            faqList.innerHTML = faqs.map(faq => `
+                <li class="faq-item" onclick="openChatWidget(); setTimeout(() => selectQuestion(${faq.id}), 500)">
+                    <span>${faq.title}</span>
+                    <i class="fas fa-chevron-right"></i>
+                </li>
+            `).join('');
+        }
+
+        function renderServices() {
+            const serviceList = document.getElementById('serviceList');
+            if (services.length === 0) {
+                serviceList.innerHTML = '<li class="faq-item"><span>No services available</span></li>';
+                return;
+            }
+            serviceList.innerHTML = services.map(service => `
+                <li class="faq-item" onclick="openChatWidget(); setTimeout(() => selectQuestion(${service.id}), 500)">
+                    <span>${service.title}</span>
+                    <i class="fas fa-chevron-right"></i>
+                </li>
+            `).join('');
+        }
+
+        function filterFAQs(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const items = document.querySelectorAll('#faqList .faq-item');
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(searchTerm) ? 'flex' : 'none';
+            });
+        }
+
+        function addBotMessage(content, messageType = 'ai', attachmentUrl = null, attachmentType = null, senderProfilePicture = null, isRead = false, readByProfilePicture = null, readByName = null) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${messageType}`;
+            
+            const senderDiv = document.createElement('div');
+            senderDiv.className = 'message-sender';
+            
+            // Add profile picture if available
+            if (senderProfilePicture) {
+                const profileImg = document.createElement('img');
+                profileImg.className = 'message-sender-profile';
+                profileImg.src = senderProfilePicture;
+                profileImg.alt = messageType === 'agent' && assignedAgentName ? assignedAgentName : `${botName} (BOT)`;
+                profileImg.onerror = function() {
+                    this.style.display = 'none';
+                };
+                senderDiv.appendChild(profileImg);
+            }
+            
+            // Show agent name if connected to agent, otherwise show bot name
+            const senderName = document.createElement('span');
+            if (messageType === 'agent' && assignedAgentName) {
+                senderName.textContent = assignedAgentName;
+            } else {
+                senderName.textContent = `${botName} (BOT)`;
+            }
+            senderDiv.appendChild(senderName);
+            
+            // Check if it's a voice message
+            if (attachmentUrl && (attachmentType === 'voice' || attachmentUrl.match(/\.(webm|mp3|ogg|wav)$/i))) {
+                const voiceDiv = document.createElement('div');
+                voiceDiv.className = 'voice-message-preview';
+                
+                const playBtn = document.createElement('button');
+                playBtn.className = 'voice-play-btn';
+                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                playBtn.onclick = function(e) {
+                    e.stopPropagation();
+                    playVoiceMessage(this, attachmentUrl, voiceDiv);
+                };
+                
+                // Voice wave animation container
+                const voiceWaveContainer = document.createElement('div');
+                voiceWaveContainer.className = 'voice-wave-container';
+                for (let i = 0; i < 5; i++) {
+                    const wave = document.createElement('div');
+                    wave.className = 'voice-wave';
+                    voiceWaveContainer.appendChild(wave);
+                }
+                
+                const voiceInfo = document.createElement('div');
+                voiceInfo.className = 'voice-message-info';
+                voiceInfo.innerHTML = `
+                    <div class="voice-message-duration">Voice message</div>
+                    <div class="voice-message-time">Tap to play</div>
+                `;
+                
+                voiceDiv.appendChild(playBtn);
+                voiceDiv.appendChild(voiceWaveContainer);
+                voiceDiv.appendChild(voiceInfo);
+                
+                messageDiv.appendChild(senderDiv);
+                messageDiv.appendChild(voiceDiv);
+            } else {
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'message-content';
+                contentDiv.innerHTML = content.replace(/\n/g, '<br>');
+                messageDiv.appendChild(senderDiv);
+                messageDiv.appendChild(contentDiv);
+            }
+            
+            // Add seen indicator if message is read
+            if (isRead && readByProfilePicture) {
+                const seenIndicator = document.createElement('div');
+                seenIndicator.className = 'message-seen';
+                
+                const seenLabel = document.createElement('span');
+                seenLabel.className = 'message-seen-label';
+                seenLabel.textContent = 'Seen by';
+                seenIndicator.appendChild(seenLabel);
+                
+                const seenProfile = document.createElement('img');
+                seenProfile.className = 'message-seen-profile';
+                seenProfile.src = readByProfilePicture;
+                seenProfile.alt = readByName || 'Agent';
+                seenProfile.onerror = function() {
+                    this.style.display = 'none';
+                };
+                seenIndicator.appendChild(seenProfile);
+                
+                messageDiv.appendChild(seenIndicator);
+            }
+            
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            
+            // Play sound and update tab
+            playSound('received');
+            updateTabTitle(true);
+        }
+        
+        function addAgentMessage(content, agentName, attachmentUrl = null, attachmentType = null, senderProfilePicture = null, isRead = false, readByProfilePicture = null, readByName = null) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message agent';
+            
+            const senderDiv = document.createElement('div');
+            senderDiv.className = 'message-sender';
+            
+            // Add profile picture if available
+            if (senderProfilePicture) {
+                const profileImg = document.createElement('img');
+                profileImg.className = 'message-sender-profile';
+                profileImg.src = senderProfilePicture;
+                profileImg.alt = agentName;
+                profileImg.onerror = function() {
+                    this.style.display = 'none';
+                };
+                senderDiv.appendChild(profileImg);
+            }
+            
+            const senderName = document.createElement('span');
+            senderName.textContent = agentName;
+            senderDiv.appendChild(senderName);
+            
+            // Check if it's a voice message
+            if (attachmentUrl && (attachmentType === 'voice' || attachmentUrl.match(/\.(webm|mp3|ogg|wav)$/i))) {
+                const voiceDiv = document.createElement('div');
+                voiceDiv.className = 'voice-message-preview';
+                
+                const playBtn = document.createElement('button');
+                playBtn.className = 'voice-play-btn';
+                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                playBtn.onclick = function(e) {
+                    e.stopPropagation();
+                    playVoiceMessage(this, attachmentUrl, voiceDiv);
+                };
+                
+                // Voice wave animation container
+                const voiceWaveContainer = document.createElement('div');
+                voiceWaveContainer.className = 'voice-wave-container';
+                for (let i = 0; i < 5; i++) {
+                    const wave = document.createElement('div');
+                    wave.className = 'voice-wave';
+                    voiceWaveContainer.appendChild(wave);
+                }
+                
+                const voiceInfo = document.createElement('div');
+                voiceInfo.className = 'voice-message-info';
+                voiceInfo.innerHTML = `
+                    <div class="voice-message-duration">Voice message</div>
+                    <div class="voice-message-time">Tap to play</div>
+                `;
+                
+                voiceDiv.appendChild(playBtn);
+                voiceDiv.appendChild(voiceWaveContainer);
+                voiceDiv.appendChild(voiceInfo);
+                
+                messageDiv.appendChild(senderDiv);
+                messageDiv.appendChild(voiceDiv);
+            } else {
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'message-content';
+                contentDiv.innerHTML = content.replace(/\n/g, '<br>');
+                messageDiv.appendChild(senderDiv);
+                messageDiv.appendChild(contentDiv);
+            }
+            
+            // Add seen indicator if message is read
+            if (isRead && readByProfilePicture) {
+                const seenIndicator = document.createElement('div');
+                seenIndicator.className = 'message-seen';
+                
+                const seenLabel = document.createElement('span');
+                seenLabel.className = 'message-seen-label';
+                seenLabel.textContent = 'Seen by';
+                seenIndicator.appendChild(seenLabel);
+                
+                const seenProfile = document.createElement('img');
+                seenProfile.className = 'message-seen-profile';
+                seenProfile.src = readByProfilePicture;
+                seenProfile.alt = readByName || 'Agent';
+                seenProfile.onerror = function() {
+                    this.style.display = 'none';
+                };
+                seenIndicator.appendChild(seenProfile);
+                
+                messageDiv.appendChild(seenIndicator);
+            }
+            
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            
+            // Play sound and update tab
+            playSound('received');
+            updateTabTitle(true);
+        }
+
+        function addUserMessage(content) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message user';
+            
+            const senderDiv = document.createElement('div');
+            senderDiv.className = 'message-sender';
+            senderDiv.textContent = customerInfo.name || 'You';
+            senderDiv.style.textAlign = 'right';
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            contentDiv.textContent = content;
+            
+            messageDiv.appendChild(senderDiv);
+            messageDiv.appendChild(contentDiv);
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            
+            // Play sound for sent message
+            playSound('sent');
+        }
+
+        function showTyping() {
+            document.getElementById('typingIndicator').classList.add('active');
+            const messagesDiv = document.getElementById('chatMessages');
+            messagesDiv.appendChild(document.getElementById('typingIndicator'));
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function hideTyping() {
+            document.getElementById('typingIndicator').classList.remove('active');
+        }
+
+        function handleChatSubmit(e) {
+            e.preventDefault();
+            if (currentStep !== 'chat' && currentStep !== 'leaving_message') return;
+            
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+            if (!message) return;
+            
+            addUserMessage(message);
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+            
+            showTyping();
+            
+            // Add timeout for poor internet
+            const timeoutId = setTimeout(() => {
+                hideTyping();
+                showLoadingOverlay('Taking longer than usual... Please check your internet connection.');
+            }, 5000);
+            
+            fetch(`${API_BASE_URL}/api/chat/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken') || ''
+                },
+                body: JSON.stringify({
+                    session_id: getSessionId(),
+                    message: message,
+                    customer_name: customerInfo.name,
+                    customer_email: customerInfo.email,
+                    customer_phone: customerInfo.phone
+                })
+            })
+            .then(response => {
+                clearTimeout(timeoutId);
+                hideLoadingOverlay();
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                hideTyping();
+                
+                // Check if agent was assigned
+                if (data.assigned_agent_name || data.assigned_agent) {
+                    if (!assignedAgentName) {
+                        // Agent was just assigned - update header but don't show connection message
+                        assignedAgentName = data.assigned_agent_name || data.assigned_agent;
+                        assignedAgentUsername = data.assigned_agent;
+                        const agentProfilePicture = data.assigned_agent_profile_picture || null;
+                        updateChatHeaderForAgent(assignedAgentName, agentProfilePicture);
+                        // Don't show automatic connection message - let them chat directly
+                        // Start polling for new messages when agent is assigned
+                        startMessagePolling();
+                    } else {
+                        // Agent was already assigned, ensure polling is running
+                        startMessagePolling();
+                    }
+                }
+                
+                // Only display AI/bot messages if there's a message and no agent is assigned
+                // When agent is assigned, messages come through polling, not through chat API response
+                if (data.message && data.message.trim() && !(data.assigned_agent_name || data.assigned_agent)) {
+                    // Regular AI response - no agent assigned
+                    const attachmentUrl = data.attachment_url || null;
+                    const attachmentType = data.attachment_type || null;
+                    
+                    addBotMessage(data.message, 'ai', attachmentUrl, attachmentType);
+                    playSound('message'); // Play sound for new AI message
+                    
+                    // Don't show duplicate prompts after user has already sent a message
+                    // Only suggest ticket if user explicitly needs help and hasn't been offered yet
+                    // Removed automatic prompts to avoid repetition
+                } else if (data.agent_connected || (data.assigned_agent_name || data.assigned_agent)) {
+                    // Agent connected - show notification and update UI
+                    const isNewConnection = !assignedAgentName && (data.assigned_agent_name || data.assigned_agent);
+                    
+                    if (data.agent_connected || isNewConnection) {
+                        assignedAgentName = data.assigned_agent_name || data.assigned_agent || 'Agent';
+                        assignedAgentUsername = data.assigned_agent;
+                        const agentProfilePicture = data.assigned_agent_profile_picture || null;
+                        updateChatHeaderForAgent(assignedAgentName, agentProfilePicture);
+                        
+                        // Show connection message ONLY if it's a new connection AND flag is set
+                        if (isNewConnection && data.show_connection_message !== false) {
+                            if (data.message && data.message.trim()) {
+                                addBotMessage(data.message, 'ai');
+                            } else if (data.agent_connected) {
+                                addBotMessage(`✅ Great! I've connected you with ${assignedAgentName}. They'll be with you shortly.\n\n💬 You can start chatting now - your agent will see your messages!`, 'ai');
+                            }
+                        }
+                        // If agent already connected, don't show connection message - let them chat freely
+                        
+                        playSound('agent');
+                        
+                        // Show browser notification if permission granted
+                        if ('Notification' in window && Notification.permission === 'granted') {
+                            new Notification('Agent Connected', {
+                                body: `You've been connected with ${assignedAgentName}`
+                            });
+                        }
+                        
+                        // Start WebSocket connection and polling for messages
+                        connectWebSocket();
+                        startMessagePolling();
+                    } else {
+                        // Agent was already assigned, ensure polling is running
+                        startMessagePolling();
+                    }
+                }
+                // If no message and no agent, that's fine - user just sent a message, agent will respond via polling
+            })
+            .catch(error => {
+                clearTimeout(timeoutId);
+                hideLoadingOverlay();
+                hideTyping();
+                console.error('Chat error:', error);
+                
+                // Better error handling
+                if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                    addBotMessage("⚠️ It looks like you're having connection issues. Please check your internet connection and try again. Your message has been saved locally and will be sent when you're back online.");
+                } else {
+                    addBotMessage("I apologize, but I'm having trouble processing your request right now. Please try again in a moment, or contact us directly if the problem persists.");
+                }
+            });
+        }
+
+        function toggleVoiceRecording() {
+            if (!isRecording) {
+                startVoiceRecording();
+            } else {
+                stopRecording(false);
+            }
+        }
+
+        async function startVoiceRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                
+                mediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+                
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    // Store audio blob for upload
+                    window.recordedAudioBlob = audioBlob;
+                };
+                
+                mediaRecorder.start();
+                isRecording = true;
+                document.getElementById('voiceBtn').classList.add('recording');
+                
+                // Show recording in chat window (WhatsApp style)
+                showVoiceRecordingInChat();
+                
+                recordingStartTime = Date.now();
+                recordingTimer = setInterval(() => {
+                    const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+                    const minutes = Math.floor(elapsed / 60);
+                    const seconds = elapsed % 60;
+                    const timeDisplay = document.getElementById('recordingTimeDisplay');
+                    if (timeDisplay) {
+                        timeDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                    }
+                }, 1000);
+            } catch (error) {
+                console.error('Error starting recording:', error);
+                alert('Microphone access denied. Please allow microphone access.');
+            }
+        }
+
+        function showVoiceRecordingInChat() {
+            const messagesDiv = document.getElementById('chatMessages');
+            const recordingDiv = document.createElement('div');
+            recordingDiv.id = 'voiceRecordingMessage';
+            recordingDiv.className = 'message user';
+            recordingDiv.innerHTML = `
+                <div class="voice-recording-message user">
+                    <div class="voice-waves">
+                        <div class="voice-wave-bar"></div>
+                        <div class="voice-wave-bar"></div>
+                        <div class="voice-wave-bar"></div>
+                        <div class="voice-wave-bar"></div>
+                        <div class="voice-wave-bar"></div>
+                        <div class="voice-wave-bar"></div>
+                        <div class="voice-wave-bar"></div>
+                        <div class="voice-wave-bar"></div>
+                    </div>
+                    <div class="voice-recording-time" id="recordingTimeDisplay">00:00</div>
+                    <div class="voice-recording-controls">
+                        <button class="voice-control-btn" onclick="stopRecording(true)" title="Send">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button class="voice-control-btn" onclick="stopRecording(false)" title="Cancel">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            messagesDiv.appendChild(recordingDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function stopRecording(send) {
+            if (mediaRecorder && isRecording) {
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                isRecording = false;
+                document.getElementById('voiceBtn').classList.remove('recording');
+                
+                // Remove recording message from chat
+                const recordingMsg = document.getElementById('voiceRecordingMessage');
+                if (recordingMsg) {
+                    recordingMsg.remove();
+                }
+                
+                if (recordingTimer) {
+                    clearInterval(recordingTimer);
+                    recordingTimer = null;
+                }
+                
+                if (send && window.recordedAudioBlob) {
+                    const duration = Math.floor((Date.now() - recordingStartTime) / 1000);
+                    const minutes = Math.floor(duration / 60);
+                    const seconds = duration % 60;
+                    const durationText = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                    
+                    // Upload voice message
+                    uploadVoiceMessage(window.recordedAudioBlob, durationText);
+                    window.recordedAudioBlob = null;
+                }
+            }
+        }
+
+        async function uploadVoiceMessage(audioBlob, duration) {
+            const formData = new FormData();
+            const fileName = `voice_${Date.now()}.webm`;
+            formData.append('file', audioBlob, fileName);
+            formData.append('session_id', getSessionId());
+            formData.append('message_type', 'voice');
+            
+            // Show voice message preview in chat immediately (optimistic UI)
+            showVoiceMessagePreview(duration, null);
+            
+            // Upload the file
+            try {
+                const audioUrl = await uploadAudioFile(formData);
+                if (audioUrl) {
+                    // Update the voice message with the actual URL
+                    const voiceMessages = document.querySelectorAll('.voice-message-preview');
+                    const lastVoiceMessage = voiceMessages[voiceMessages.length - 1];
+                    if (lastVoiceMessage) {
+                        const playBtn = lastVoiceMessage.querySelector('.voice-play-btn');
+                        if (playBtn) {
+                            playBtn.onclick = function(e) {
+                                e.stopPropagation();
+                                playVoiceMessage(this, audioUrl, lastVoiceMessage);
+                            };
+                        }
+                    }
+                } else {
+                    // Show error message
+                    addBotMessage("I'm sorry, there was an issue uploading your voice message. Please try recording again.");
+                }
+                
+                showTyping();
+                setTimeout(() => {
+                    hideTyping();
+                    addBotMessage("Thank you for your voice message! We've received it and will respond soon.");
+                }, 1000);
+            } catch (error) {
+                console.error('Error uploading voice message:', error);
+                addBotMessage("I'm sorry, there was an issue uploading your voice message. Please try recording again.");
+            }
+        }
+        
+        async function uploadAudioFile(formData) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/chat/upload/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken') || ''
+                    },
+                    body: formData
+                });
+                
+                const data = await response.json();
+                if (data.attachment_url) {
+                    // Ensure the URL is absolute if it's relative
+                    if (data.attachment_url.startsWith('/')) {
+                        return window.location.origin + data.attachment_url;
+                    }
+                    return data.attachment_url;
+                }
+                return null;
+            } catch (error) {
+                console.error('Error uploading audio:', error);
+                return null;
+            }
+        }
+        
+        function showVoiceMessagePreview(duration, audioUrl) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message user';
+            const messageId = 'voice_' + Date.now();
+            messageDiv.id = messageId;
+            
+            const voiceDiv = document.createElement('div');
+            voiceDiv.className = 'voice-message-preview user';
+            
+            const playBtn = document.createElement('button');
+            playBtn.className = 'voice-play-btn';
+            playBtn.innerHTML = '<i class="fas fa-play"></i>';
+            playBtn.onclick = function(e) {
+                e.stopPropagation();
+                if (audioUrl) {
+                    playVoiceMessage(this, audioUrl, voiceDiv);
+                }
+            };
+            
+            // Voice wave animation container
+            const voiceWaveContainer = document.createElement('div');
+            voiceWaveContainer.className = 'voice-wave-container';
+            for (let i = 0; i < 5; i++) {
+                const wave = document.createElement('div');
+                wave.className = 'voice-wave';
+                voiceWaveContainer.appendChild(wave);
+            }
+            
+            const voiceInfo = document.createElement('div');
+            voiceInfo.className = 'voice-message-info';
+            voiceInfo.innerHTML = `
+                <div class="voice-message-duration">${duration}</div>
+                <div class="voice-message-time">Voice message</div>
+            `;
+            
+            voiceDiv.appendChild(playBtn);
+            voiceDiv.appendChild(voiceWaveContainer);
+            voiceDiv.appendChild(voiceInfo);
+            messageDiv.appendChild(voiceDiv);
+            
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        
+        let currentAudio = null;
+        
+        function playVoiceMessage(btn, audioUrl, voiceDiv) {
+            const icon = btn.querySelector('i');
+            const messageDiv = btn.closest('.message');
+            const voicePreview = voiceDiv || btn.closest('.voice-message-preview');
+            
+            if (icon.classList.contains('fa-play')) {
+                // Stop any currently playing audio
+                if (currentAudio) {
+                    currentAudio.pause();
+                    currentAudio = null;
+                    // Reset all play buttons and wave animations
+                    document.querySelectorAll('.voice-play-btn i').forEach(i => {
+                        if (i.classList.contains('fa-pause')) {
+                            i.classList.remove('fa-pause');
+                            i.classList.add('fa-play');
+                        }
+                    });
+                    document.querySelectorAll('.voice-message-preview').forEach(v => {
+                        v.classList.remove('playing');
+                    });
+                }
+                
+                // Play audio
+                if (audioUrl) {
+                    try {
+                        currentAudio = new Audio(audioUrl);
+                        
+                        // Add loading state
+                        icon.classList.remove('fa-play');
+                        icon.classList.add('fa-spinner', 'fa-spin');
+                        
+                        currentAudio.addEventListener('loadeddata', () => {
+                            icon.classList.remove('fa-spinner', 'fa-spin');
+                            icon.classList.add('fa-pause');
+                            // Start wave animation
+                            if (voicePreview) {
+                                voicePreview.classList.add('playing');
+                            }
+                        });
+                        
+                        currentAudio.play().catch(error => {
+                            console.error('Error playing audio:', error);
+                            icon.classList.remove('fa-spinner', 'fa-spin', 'fa-pause');
+                            icon.classList.add('fa-play');
+                            if (voicePreview) {
+                                voicePreview.classList.remove('playing');
+                            }
+                            alert('Unable to play voice message. Please check your internet connection.');
+                        });
+                        
+                        currentAudio.onended = () => {
+                            icon.classList.remove('fa-pause');
+                            icon.classList.add('fa-play');
+                            // Stop wave animation
+                            if (voicePreview) {
+                                voicePreview.classList.remove('playing');
+                            }
+                            currentAudio = null;
+                        };
+                        
+                        currentAudio.onerror = (error) => {
+                            console.error('Audio error:', error);
+                            icon.classList.remove('fa-spinner', 'fa-spin', 'fa-pause');
+                            icon.classList.add('fa-play');
+                            // Stop wave animation
+                            if (voicePreview) {
+                                voicePreview.classList.remove('playing');
+                            }
+                            currentAudio = null;
+                            alert('Error playing voice message. The file may be corrupted or unavailable.');
+                        };
+                    } catch (error) {
+                        console.error('Error creating audio:', error);
+                        icon.classList.remove('fa-spinner', 'fa-spin');
+                        icon.classList.add('fa-play');
+                        if (voicePreview) {
+                            voicePreview.classList.remove('playing');
+                        }
+                        alert('Unable to play voice message. Please try again.');
+                    }
+                } else {
+                    alert('Audio file not available. Please try recording again.');
+                }
+            } else {
+                // Pause audio
+                if (currentAudio) {
+                    currentAudio.pause();
+                    icon.classList.remove('fa-pause');
+                    icon.classList.add('fa-play');
+                    // Stop wave animation
+                    if (voicePreview) {
+                        voicePreview.classList.remove('playing');
+                    }
+                }
+            }
+        }
+
+        function getSessionId() {
+            if (!sessionId) {
+                sessionId = localStorage.getItem('chat_session_id') || 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('chat_session_id', sessionId);
+            }
+            return sessionId;
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>

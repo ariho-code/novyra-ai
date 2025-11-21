@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novyra AI - Admin Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* MODIFIED PROFESSIONAL THEME
+           Palette:
+           - Deep blue: #0006B1
+           - Black: #000000
+           - White: #FFFFFF
+           - Golden yellow: #CFB53B
+           - Near-black (Base): #0F0F0F
+           - Dark Grey (Inputs): #1A1A1A
+           - Mid Grey (Borders/Text): #333333
+           - Light Grey (Subtle Text): #AAAAAA
+        */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #0F0F0F; /* Near-black for a softer feel */
+            color: #FFFFFF;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Subtle background grid pattern */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 6, 177, 0.03) 2px, rgba(0, 6, 177, 0.03) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(207, 181, 59, 0.03) 2px, rgba(207, 181, 59, 0.03) 4px);
+            z-index: 0;
+            opacity: 0.5;
+        }
+
+        .login-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 420px; /* Slightly more compact */
+            background: #000000;
+            /* Cleaner accent border */
+            border: 1px solid #333;
+            border-top: 4px solid #CFB53B;
+            border-radius: 12px; /* More professional radius */
+            padding: 50px 40px;
+            /* Softer, more professional shadow */
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(207, 181, 59, 0.1);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        /* Simplified, cleaner logo */
+        .login-logo {
+            width: 70px;
+            height: 70px;
+            background: #0006B1;
+            border: none;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: #FFFFFF;
+            margin: 0 auto 20px;
+            box-shadow: 0 5px 20px rgba(0, 6, 177, 0.4);
+        }
+
+        .login-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #F5F5F5;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .login-header p {
+            font-size: 14px;
+            color: #CFB53B;
+            opacity: 0.9;
+        }
+
+        .login-form {
+            margin-top: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #AAAAAA; /* Lighter, less prominent label */
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px 20px;
+            background: #1A1A1A; /* Clearer input background */
+            border: 2px solid #333; /* Neutral border */
+            border-radius: 8px;
+            color: #F5F5F5;
+            font-size: 16px;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: #CFB53B; /* Gold focus */
+            background: #111;
+            box-shadow: 0 0 0 3px rgba(207, 181, 59, 0.2);
+        }
+
+        .form-input::placeholder {
+            color: #6b7280;
+        }
+
+        .input-icon {
+            position: relative;
+        }
+
+        .input-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777; /* Subtle icon color */
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        /* Smooth icon color change on focus */
+        .input-icon:focus-within i {
+            color: #CFB53B;
+        }
+
+        .input-icon .form-input {
+            padding-left: 50px;
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #DDDDDD;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #CFB53B;
+            cursor: pointer;
+        }
+
+        .forgot-password {
+            color: #CFB53B;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .forgot-password:hover {
+            color: #0006B1; /* Use blue for hover, as in original */
+        }
+
+        /* Cleaner, borderless button */
+        .login-button {
+            width: 100%;
+            padding: 16px;
+            background: #0006B1;
+            border: none;
+            border-radius: 8px;
+            color: #FFFFFF;
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        /* Dynamic hover effect */
+        .login-button:hover {
+            transform: translateY(-3px);
+            background: #CFB53B;
+            color: #000000; /* Black text on gold for contrast */
+            box-shadow: 0 10px 30px rgba(207, 181, 59, 0.3);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        .login-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            background: #0006B1; /* Revert on disable */
+            color: #FFFFFF;
+            box-shadow: none;
+        }
+
+        /* Theme-consistent error message */
+        .error-message {
+            background: rgba(207, 181, 59, 0.1);
+            border: 2px solid #CFB53B;
+            color: #CFB53B;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #333; /* Neutral separator */
+        }
+
+        .login-footer p {
+            color: #777;
+            font-size: 13px;
+        }
+
+        .login-footer a {
+            color: #CFB53B;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-footer a:hover {
+            color: #0006B1;
+        }
+
+        /* Loading spinner styles */
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #FFFFFF;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto;
+        }
+
+        .login-button.loading .loading-spinner {
+            display: block;
+        }
+        
+        /* Hide text when loading spinner is active */
+        .login-button.loading #loginButtonText {
+            display: none;
+        }
+        
+        /* Keep hover color if loading */
+        .login-button.loading:hover {
+            background: #0006B1;
+            color: #FFFFFF;
+            transform: none;
+            box-shadow: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 40px 30px;
+                border: 1px solid #333;
+                border-top: 4px solid #CFB53B;
+            }
+
+            .login-header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <div class="login-logo">
+                <i class="fas fa-robot"></i>
+            </div>
+            <h1>Novyra AI</h1>
+            <p>Admin Dashboard Access</p>
+        </div>
+
+        {% if error %}
+        <div class="error-message show" id="errorMessage">{{ error }}</div>
+        {% else %}
+        <div class="error-message" id="errorMessage"></div>
+        {% endif %}
+
+        <form class="login-form" id="loginForm" method="POST" action="/login/" onsubmit="handleLogin(event)">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label" for="username">Username</label>
+                <div class="input-icon">
+                    <i class="fas fa-user"></i>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
+                        class="form-input" 
+                        placeholder="Enter your username" 
+                        required
+                        autocomplete="username"
+                    >
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="password">Password</label>
+                <div class="input-icon">
+                    <i class="fas fa-lock"></i>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        class="form-input" 
+                        placeholder="Enter your password" 
+                        required
+                        autocomplete="current-password"
+                    >
+                </div>
+            </div>
+
+            <div class="form-options">
+                <label class="remember-me">
+                    <input type="checkbox" id="rememberMe" name="rememberMe">
+                    <span>Remember me</span>
+                </label>
+                <a href="#" class="forgot-password" onclick="alert('Contact administrator to reset password'); return false;">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="login-button" id="loginButton">
+                <span id="loginButtonText">Sign In</span>
+                <div class="loading-spinner"></div>
+            </button>
+        </form>
+
+        <div class="login-footer">
+            <p>© 2025 Novyra AI Assistant. All rights reserved.</p>
+        </div>
+    </div>
+
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const loginButton = document.getElementById('loginButton');
+            const loginButtonText = document.getElementById('loginButtonText');
+            const errorMessage = document.getElementById('errorMessage');
+            const form = document.getElementById('loginForm');
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Hide error message
+            errorMessage.classList.remove('show');
+            errorMessage.textContent = '';
+
+            // Validate inputs
+            if (!username || !password) {
+                errorMessage.textContent = 'Please enter both username and password.';
+                errorMessage.classList.add('show');
+                return;
+            }
+
+            // Show loading state
+            loginButton.classList.add('loading');
+            loginButtonText.style.display = 'none'; // Hide text
+            loginButton.disabled = true;
+
+            try {
+                // Get CSRF token
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                
+                // Submit form data
+                const formData = new FormData();
+                formData.append('username', username);
+                formData.append('password', password);
+                formData.append('csrfmiddlewaretoken', csrfToken);
+                
+                const response = await fetch('/login/', {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'include',
+                    redirect: 'follow',
+                    body: formData
+                });
+
+                const contentType = response.headers.get('content-type') || '';
+                
+                if (contentType.includes('application/json')) {
+                    // JSON response (AJAX)
+                    const data = await response.json();
+                    if (data.success) {
+                        window.location.href = data.redirect || '/dashboard/';
+                        return;
+                    } else {
+                        // Error from JSON
+                        throw new Error(data.error || 'Invalid username or password.');
+                    }
+                } else {
+                    // HTML response
+                    const responseText = await response.text();
+                    
+                    if (response.ok || response.status === 200 || responseText.includes('Dashboard')) {
+                        // Success - redirect
+                        // Check for redirect URL in response
+                        if (response.url && response.url !== window.location.href) {
+                             window.location.href = response.url;
+                        } else {
+                             window.location.href = '/dashboard/';
+                        }
+                        return;
+                    } else {
+                         // Error from HTML response
+                        throw new Error('Invalid username or password. Please try again.');
+                    }
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                errorMessage.textContent = error.message || 'Connection error. Please try again.';
+                errorMessage.classList.add('show');
+                
+                // Reset button
+                loginButton.classList.remove('loading');
+                loginButtonText.style.display = 'inline'; // Show text
+                loginButton.disabled = false;
+            }
+        }
+
+        // Auto-focus username field
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('username').focus();
+
+            // Slightly modify handleLogin to use the correct csrfToken
+            const form = document.getElementById('loginForm');
+            form.addEventListener('submit', handleLogin);
+            
+            // Remove the default onsubmit to prevent double-firing
+            form.setAttribute('onsubmit', '');
+        });
+
+        // Handle Enter key
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !document.getElementById('loginButton').disabled) {
+                document.getElementById('loginForm').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+            }
+        });
+    </script>
+</body>
+<!-- Novyra Chat Widget -->
+<script>
+    (function() {
+        var script = document.createElement("script");
+        script.src = "http://127.0.0.1:8000/api/embed/1/";
+        script.async = true;
+        document.body.appendChild(script);
+    })();
+    </script>
+</html>

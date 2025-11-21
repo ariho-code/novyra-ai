@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>AOPearlTech Solutions | Technology Solutions to Grow Your Business</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google-adsense-account" content="ca-pub-1931973034560006">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="icon" href="img/microchip-icon.png" type="image/png">
+    <style>
+        :root {
+            --primary-dark: #0a0a0a;
+            --primary-light: #f8f9fa;
+            --accent-color: #e6e6e6;
+            --highlight-color: #ffffff;
+            --gold-accent: #d4af37;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--primary-dark);
+            color: var(--primary-light);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        .fade-in-up {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .slide-in-left {
+            opacity: 0;
+            animation: slideInLeft 0.8s ease-out forwards;
+        }
+
+        .slide-in-right {
+            opacity: 0;
+            animation: slideInRight 0.8s ease-out forwards;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        .float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(10, 10, 10, 0.95);
+            padding: 15px 0;
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+            border-bottom: 1px solid rgba(230, 230, 230, 0.1);
+        }
+
+        .navbar.scrolled {
+            padding: 10px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .navbar-brand {
+            color: var(--highlight-color) !important;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.8rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand i {
+            font-size: 1.8rem;
+            margin-right: 10px;
+            color: var(--gold-accent);
+        }
+
+        .navbar-brand:hover, .nav-link:hover {
+            color: var(--gold-accent) !important;
+        }
+
+        .nav-link {
+            color: var(--accent-color) !important;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: var(--transition);
+            margin: 0 10px;
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--gold-accent);
+            transition: var(--transition);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            height: 100vh;
+            background: linear-gradient(rgba(10, 10, 10, 0.8), rgba(10, 10, 10, 0.9)), url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            z-index: 2;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--highlight-color);
+            line-height: 1.2;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: var(--accent-color);
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: var(--gold-accent);
+            border: 2px solid var(--gold-accent);
+            color: var(--primary-dark);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 12px 25px;
+            border-radius: 5px;
+            transition: var(--transition);
+        }
+
+        .btn-primary:hover {
+            background: transparent;
+            color: var(--gold-accent);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 12px 25px;
+            border-radius: 5px;
+            transition: var(--transition);
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent-color);
+            color: var(--primary-dark);
+            transform: translateY(-3px);
+        }
+
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .floating-element {
+            position: absolute;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 50%;
+        }
+
+        .floating-element:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 10%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-element:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            top: 60%;
+            left: 80%;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .floating-element:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            top: 80%;
+            left: 20%;
+            animation: float 5s ease-in-out infinite;
+        }
+
+        /* Section Styling */
+        .section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--highlight-color);
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 3px;
+            background: var(--gold-accent);
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .section-title p {
+            color: var(--accent-color);
+            max-width: 600px;
+            margin: 20px auto 0;
+        }
+
+        /* Services Section */
+        .services-section {
+            background: var(--primary-dark);
+        }
+
+        .service-card {
+            background: rgba(248, 249, 250, 0.05);
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: var(--transition);
+            height: 100%;
+            border: 1px solid rgba(230, 230, 230, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gold-accent);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: var(--transition);
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            color: var(--gold-accent);
+            margin-bottom: 20px;
+        }
+
+        .service-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--highlight-color);
+        }
+
+        .service-card p {
+            color: var(--accent-color);
+            margin-bottom: 20px;
+        }
+
+        .service-card .btn {
+            background: transparent;
+            border: 1px solid var(--gold-accent);
+            color: var(--gold-accent);
+            transition: var(--transition);
+        }
+
+        .service-card .btn:hover {
+            background: var(--gold-accent);
+            color: var(--primary-dark);
+        }
+
+        /* About Section */
+        .about-section {
+            background: rgba(248, 249, 250, 0.03);
+        }
+
+        .about-content {
+            display: flex;
+            align-items: center;
+        }
+
+        .about-text {
+            padding-right: 30px;
+        }
+
+        .about-text h2 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            color: var(--highlight-color);
+        }
+
+        .about-text p {
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .about-image {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .about-image img {
+            width: 100%;
+            height: auto;
+            transition: var(--transition);
+        }
+
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Mission & Vision */
+        .mission-vision-section {
+            background: var(--primary-dark);
+        }
+
+        .mission-card, .vision-card {
+            background: rgba(248, 249, 250, 0.05);
+            border-radius: 10px;
+            padding: 40px;
+            height: 100%;
+            border: 1px solid rgba(230, 230, 230, 0.1);
+            transition: var(--transition);
+        }
+
+        .mission-card:hover, .vision-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .mission-icon, .vision-icon {
+            font-size: 2.5rem;
+            color: var(--gold-accent);
+            margin-bottom: 20px;
+        }
+
+        .mission-card h3, .vision-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--highlight-color);
+        }
+
+        .mission-card p, .vision-card p {
+            color: var(--accent-color);
+            line-height: 1.7;
+        }
+
+        /* Team Section */
+        .team-section {
+            background: rgba(248, 249, 250, 0.03);
+        }
+
+        .team-card {
+            background: rgba(248, 249, 250, 0.05);
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            border: 1px solid rgba(230, 230, 230, 0.1);
+            transition: var(--transition);
+            height: 100%;
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .team-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 20px;
+            border: 3px solid var(--gold-accent);
+        }
+
+        .team-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .team-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            color: var(--highlight-color);
+        }
+
+        .team-role {
+            color: var(--gold-accent);
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+
+        .team-card p {
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .social-icons a {
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .social-icons a:hover {
+            color: var(--gold-accent);
+            transform: translateY(-3px);
+        }
+
+        /* Testimonials Section */
+        .testimonials-section {
+            background: var(--primary-dark);
+        }
+
+        .testimonial-card {
+            background: rgba(248, 249, 250, 0.05);
+            border-radius: 10px;
+            padding: 30px;
+            margin: 0 15px;
+            border: 1px solid rgba(230, 230, 230, 0.1);
+            transition: var(--transition);
+            height: 100%;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .testimonial-text {
+            color: var(--accent-color);
+            font-style: italic;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+
+        .author-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 15px;
+        }
+
+        .author-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .author-info h4 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: var(--highlight-color);
+        }
+
+        .author-info p {
+            color: var(--gold-accent);
+            margin: 0;
+        }
+
+        /* Pricing Section */
+        .pricing-section {
+            background: rgba(248, 249, 250, 0.03);
+        }
+
+        .pricing-card {
+            background: rgba(248, 249, 250, 0.05);
+            border-radius: 10px;
+            padding: 40px 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            border: 1px solid rgba(230, 230, 230, 0.1);
+            transition: var(--transition);
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-card.popular {
+            border: 2px solid var(--gold-accent);
+            transform: scale(1.05);
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .pricing-card.popular:hover {
+            transform: scale(1.05) translateY(-10px);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--gold-accent);
+            color: var(--primary-dark);
+            padding: 5px 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 0 0 0 10px;
+        }
+
+        .pricing-header {
+            margin-bottom: 30px;
+        }
+
+        .pricing-header h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--highlight-color);
+        }
+
+        .price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--gold-accent);
+            margin-bottom: 5px;
+        }
+
+        .price-subtext {
+            color: var(--accent-color);
+            font-size: 0.9rem;
+        }
+
+        .pricing-features {
+            margin-bottom: 30px;
+        }
+
+        .pricing-features ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .pricing-features li {
+            color: var(--accent-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .pricing-features li i {
+            color: var(--gold-accent);
+            margin-right: 10px;
+        }
+
+        .pricing-card .btn {
+            width: 100%;
+        }
+
+        /* Python Projects Section */
+        .python-section {
+            background: var(--primary-dark);
+        }
+
+        .python-card {
+            background: rgba(248, 249, 250, 0.05);
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(230, 230, 230, 0.1);
+            transition: var(--transition);
+            height: 100%;
+        }
+
+        .python-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .python-icon {
+            font-size: 3rem;
+            color: var(--gold-accent);
+            margin-bottom: 20px;
+        }
+
+        .python-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--highlight-color);
+        }
+
+        .python-card p {
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(10, 10, 10, 0.95);
+            padding: 60px 0 0;
+            border-top: 1px solid rgba(230, 230, 230, 0.1);
+        }
+
+        .footer-content {
+            padding-bottom: 40px;
+        }
+
+        .footer-logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--highlight-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-logo i {
+            color: var(--gold-accent);
+            margin-right: 10px;
+        }
+
+        .footer-about p {
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .footer-heading {
+            font-size: 1.3rem;
+            color: var(--highlight-color);
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-heading::after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 2px;
+            background: var(--gold-accent);
+            bottom: 0;
+            left: 0;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--gold-accent);
+            padding-left: 5px;
+        }
+
+        .footer-contact p {
+            color: var(--accent-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-contact i {
+            color: var(--gold-accent);
+            margin-right: 10px;
+            width: 20px;
+        }
+
+        .footer-bottom {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px 0;
+            text-align: center;
+            border-top: 1px solid rgba(230, 230, 230, 0.1);
+        }
+
+        .footer-bottom p {
+            color: var(--accent-color);
+            margin: 0;
+        }
+
+        /* WhatsApp Button */
+        .whatsapp-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background-color: #25D366;
+            color: #FFFFFF;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+            z-index: 1000;
+        }
+
+        .whatsapp-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .whatsapp-btn i {
+            font-size: 2rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero-content h1 {
+                font-size: 2.8rem;
+            }
+            
+            .about-content {
+                flex-direction: column;
+            }
+            
+            .about-text {
+                padding-right: 0;
+                margin-bottom: 30px;
+            }
+            
+            .pricing-card.popular {
+                transform: scale(1);
+            }
+            
+            .pricing-card.popular:hover {
+                transform: translateY(-10px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero-content p {
+                font-size: 1rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navbar-brand {
+                font-size: 1.5rem;
+            }
+            
+            .hero-content h1 {
+                font-size: 1.8rem;
+            }
+            
+            .section {
+                padding: 60px 0;
+            }
+            
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+            
+            .service-card, .team-card, .pricing-card, .python-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html"><i class="fas fa-microchip"></i>AOPearlTech</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#services">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#team">Team</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#pricing">Pricing</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="project.html">Projects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="floating-elements">
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+        </div>
+        <div class="container">
+            <div class="hero-content fade-in-up">
+                <h1>Transform Your Business with Cutting-Edge Technology Solutions</h1>
+                <p>We deliver innovative web development, custom software, and AI-powered systems that drive growth, efficiency, and competitive advantage for businesses of all sizes.</p>
+                <div class="hero-buttons">
+                    <a href="#services" class="btn btn-primary">Explore Our Services</a>
+                    <a href="contact.html" class="btn btn-secondary">Get a Free Consultation</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="section services-section">
+        <div class="container">
+            <div class="section-title fade-in-up">
+                <h2>Our Services</h2>
+                <p>Comprehensive technology solutions designed to elevate your business</p>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 fade-in-up">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fas fa-laptop-code"></i>
+                        </div>
+                        <h3>Web Development</h3>
+                        <p>Custom, responsive websites and web applications built with modern technologies to enhance user experience and drive conversions.</p>
+                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#webDevModal">Learn More</button>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 fade-in-up" style="animation-delay: 0.1s;">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fas fa-paint-brush"></i>
+                        </div>
+                        <h3>Web Design</h3>
+                        <p>Visually stunning, user-centric designs that create engaging digital experiences and strengthen your brand identity.</p>
+                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#webDesignModal">Learn More</button>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 fade-in-up" style="animation-delay: 0.2s;">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fas fa-warehouse"></i>
+                        </div>
+                        <h3>Inventory Systems</h3>
+                        <p>Custom inventory management solutions that streamline operations, reduce errors, and provide real-time insights.</p>
+                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#inventoryModal">Learn More</button>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 fade-in-up" style="animation-delay: 0.3s;">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Cybersecurity</h3>
+                        <p>Comprehensive security solutions to protect your digital assets, data, and customer information from threats.</p>
+                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#cybersecurityModal">Learn More</button>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 fade-in-up" style="animation-delay: 0.4s;">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <h3>IT Consultation</h3>
+                        <p>Strategic technology guidance to help you leverage AI, automation, and digital transformation for business growth.</p>
+                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#itConsultationModal">Learn More</button>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 fade-in-up" style="animation-delay: 0.5s;">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3>Mobile App Development</h3>
+                        <p>Native and cross-platform mobile applications for iOS and Android that engage users and drive business results.</p>
+                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#appDevModal">Learn More</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section about-section">
+        <div class="container">
+            <div class="section-title fade-in-up">
+                <h2>About Us</h2>
+                <p>Driving digital transformation with innovative technology solutions</p>
+            </div>
+            <div class="about-content">
+                <div class="row">
+                    <div class="col-lg-6 slide-in-left">
+                        <div class="about-text">
+                            <h2>Transforming Businesses Through Technology</h2>
+                            <p>Founded in 2020, AOPearlTech Solutions is a premier technology company dedicated to empowering small and medium-sized businesses with cutting-edge digital solutions. Our mission is to bridge the gap between traditional operations and modern technology, enabling businesses to thrive in an increasingly digital world.</p>
+                            <p>We specialize in developing custom software, web applications, and AI-powered systems that streamline operations, enhance decision-making, and drive sustainable growth. Our team of skilled professionals combines technical expertise with business acumen to deliver solutions that address real-world challenges.</p>
+                            <p>At AOPearlTech, we believe that technology should be accessible, affordable, and transformative. We work closely with our clients to understand their unique needs and deliver tailored solutions that exceed expectations.</p>
+                            <a href="contact.html" class="btn btn-primary">Get In Touch</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 slide-in-right">
+                        <div class="about-image">
+                            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="About AOPearlTech Solutions">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission & Vision Section -->
+    <section class="section mission-vision-section">
+        <div class="container">
+            <div class="section-title fade-in-up">
+                <h2>Our Mission & Vision</h2>
+                <p>Guiding principles that drive our innovation and client success</p>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 fade-in-up">
+                    <div class="mission-card">
+                        <div class="mission-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <h3>Our Mission</h3>
+                        <p>To empower businesses with innovative, AI-driven technology solutions that streamline operations, enhance decision-making, and drive sustainable growth. We are committed to delivering affordable, scalable systems that transform challenges into opportunities, enabling our clients to compete effectively in the digital economy.</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 fade-in-up" style="animation-delay: 0.2s;">
+                    <div class="vision-card">
+                        <div class="vision-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h3>Our Vision</h3>
+                        <p>To be the leading technology partner for small and medium-sized enterprises in Africa, recognized for our innovative solutions and transformative impact. We envision a future where every business, regardless of size, can leverage cutting-edge technology to achieve unprecedented success and drive economic growth in their communities.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Python Projects Section -->
+    <section class="section python-section">
+        <div class="container">
+            <div class="section-title fade-in-up">
+                <h2>Python-Powered Solutions</h2>
+                <p>Leveraging the power of Python and Django for robust, scalable applications</p>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 fade-in-up">
+                    <div class="python-card">
+                        <div class="python-icon">
+                            <i class="fab fa-python"></i>
+                        </div>
+                        <h3>Django Web Applications</h3>
+                        <p>Custom web applications built with Django, Python's powerful web framework, offering security, scalability, and rapid development for business solutions.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 fade-in-up" style="animation-delay: 0.1s;">
+                    <div class="python-card">
+                        <div class="python-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Data Analytics & Automation</h3>
+                        <p>Python-powered data analysis, visualization, and automation solutions that transform raw data into actionable insights for informed decision-making.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 fade-in-up" style="animation-delay: 0.2s;">
+                    <div class="python-card">
+                        <div class="python-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3>AI & Machine Learning</h3>
+                        <p>Intelligent systems leveraging Python's extensive AI and ML libraries to automate processes, predict trends, and enhance business intelligence.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team" class="section team-section">
+        <div class="container">
+            <div class="section-title fade-in-up">
+                <h2>Meet Our Team</h2>
+                <p>The talented professionals driving innovation at AOPearlTech</p>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 fade-in-up">
+                    <div class="team-card">
+                        <div class="team-image">
+                            <img src="img/timothy-webtech1.jpeg" alt="Timothy Ariho">
+                        </div>
+                        <h3>Timothy Ariho</h3>
+                        <p class="team-role">Software Engineer & Cybersecurity Enthusiast</p>
+                        <p>I've been coding since high school, fueling my passion as a Full Stack Developer with a focus on cybersecurity. My love for developing systems drives me to create solutions that tackle real-world challenges, especially in Africa, starting from Uganda. Currently, I'm a student at Victoria University Kampala, pursuing a Bachelor of Science in Software Engineering, with aspirations to change the world through tech, AI, and innovative systems.</p>
+                        <div class="social-icons">
+                            <a href="https://x.com/arihotim" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+                            <a href="https://www.instagram.com/arihotimo/" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                            <a href="https://www.linkedin.com/in/timothy-ariho-aab4ab216/" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+                            <a href="https://wa.me/+256743249384" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 fade-in-up" style="animation-delay: 0.2s;">
+                    <div class="team-card">
+                        <div class="team-image">
+                            <img src="img/alfred-webtech.jpeg" alt="Alfred Ocen">
+                        </div>
+                        <h3>Alfred Ocen</h3>
+                        <p class="team-role">Front-End & Marketing Officer</p>
+                        <p>As a Front-End & Marketing Officer, I specialize in designing user-friendly interfaces and aligning them with business goals using HTML, CSS, JavaScript, and React. My creative approach ensures visually appealing designs that enhance user engagement. Additionally, I leverage marketing strategies to boost brand visibility, driving successful campaigns that resonate with target audiences. I thrive on collaboration and am committed to delivering innovative solutions that meet client needs effectively.</p>
+                        <div class="social-icons">
+                            <a href="https://x.com/" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+                            <a href="https://www.instagram.com/ocenalfred0/" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                            <a href="#" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+                            <a href="https://wa.me/+256774307557" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="section testimonials-section">
+        <div class="container">
+            <div class="section-title fade-in-up">
+                <h2>Client Testimonials</h2>
+                <p>What our clients say about working with us</p>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 fade-in-up">
+                    <div class="testimonial-card">
+                        <p class="testimonial-text">"AOPearlTech Solutions transformed our vision into reality with the creation of godhershel.com. Their team built a dynamic, user-friendly website for Godhershel Computer Institute that perfectly showcases our courses and engages our students."</p>
+                        <div class="testimonial-author">
+                            <div class="author-info">
+                                <h4>Fungaroo Moses</h4>
+                                <p>Godhershel Computer Institute</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 fade-in-up" style="animation-delay: 0.1s;">
+                    <div class="testimonial-card">
+                        <p class="testimonial-text">"Working with AOPearlTech Solutions was a game-changer for my art business. They crafted a stunning e-commerce platform, OkeArtsy, that showcases my art pieces beautifully and makes purchasing effortless for my customers."</p>
+                        <div class="testimonial-author">
+                            <div class="author-info">
+                                <h4>Reagan Okello</h4>
+                                <p>OkeArtsy</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 fade-in-up" style="animation-delay: 0.2s;">
+                    <div class="testimonial-card">
+                        <p class="testimonial-text">"AOPearlTech Solutions revolutionized our operations at NGABO EMPORIUM with a custom stock management system. This powerful tool tracks sales, expenses, profits, and stock levels in real-time, eliminating errors and saving us countless hours."</p>
+                        <div class="testimonial-author">
+                            <div class="author-info">
+                                <h4>NGABO EMPORIUM</h4>
+                                <p>Retail Business</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="section pricing-section">
+        <div class="container">
+            <div class="section-title fade-in-up">
+                <h2>Pricing Plans</h2>
+                <p>Flexible pricing options to suit your business needs and budget</p>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 fade-in-up">
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <h3>Basic Plan</h3>
+                            <div class="price">500,000 UGX</div>
+                            <div class="price-subtext">(~135 USD)</div>
+                        </div>
+                        <div class="pricing-features">
+                            <ul>
+                                <li><i class="fas fa-check"></i> Static Website (1-5 pages)</li>
+                                <li><i class="fas fa-check"></i> Portfolio or Small Business Site</li>
+                                <li><i class="fas fa-check"></i> 1 Year Maintenance</li>
+                                <li><i class="fas fa-check"></i> Basic SEO Setup</li>
+                                <li><i class="fas fa-check"></i> Responsive Design</li>
+                                <li><i class="fas fa-check"></i> Contact Form Integration</li>
+                            </ul>
+                        </div>
+                        <a href="https://wa.me/+256743249384?text=Hello%20AOPearlTech%20Solutions,%20I%20am%20interested%20in%20the%20Basic%20Plan%20for%20a%20static%20website%20at%20500,000%20UGX.%20Can%20we%20discuss%20further%20details?" class="btn btn-primary">Get Started</a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 fade-in-up" style="animation-delay: 0.1s;">
+                    <div class="pricing-card popular">
+                        <div class="popular-badge">Most Popular</div>
+                        <div class="pricing-header">
+                            <h3>Standard Plan</h3>
+                            <div class="price">1,000,000 UGX</div>
+                            <div class="price-subtext">(~270 USD)</div>
+                        </div>
+                        <div class="pricing-features">
+                            <ul>
+                                <li><i class="fas fa-check"></i> Dynamic Website</li>
+                                <li><i class="fas fa-check"></i> Sports, School, or Hospital Site</li>
+                                <li><i class="fas fa-check"></i> 2 Years Maintenance</li>
+                                <li><i class="fas fa-check"></i> Advanced SEO Setup</li>
+                                <li><i class="fas fa-check"></i> Content Management System</li>
+                                <li><i class="fas fa-check"></i> Custom Integrations</li>
+                                <li><i class="fas fa-check"></i> Regular Updates</li>
+                                <li><i class="fas fa-check"></i> Priority Support</li>
+                            </ul>
+                        </div>
+                        <a href="https://wa.me/+256743249384?text=Hello%20AOPearlTech%20Solutions,%20I%20am%20interested%20in%20the%20Standard%20Plan%20for%20a%20dynamic%20website%20at%201,000,000%20UGX.%20Can%20we%20discuss%20further%20details?" class="btn btn-primary">Upgrade Now</a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 fade-in-up" style="animation-delay: 0.2s;">
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <h3>Professional Plan</h3>
+                            <div class="price">1,500,000+ UGX</div>
+                            <div class="price-subtext">(~405+ USD)</div>
+                        </div>
+                        <div class="pricing-features">
+                            <ul>
+                                <li><i class="fas fa-check"></i> Custom Inventory Systems</li>
+                                <li><i class="fas fa-check"></i> E-commerce or E-voting Platforms</li>
+                                <li><i class="fas fa-check"></i> 5 Years Maintenance</li>
+                                <li><i class="fas fa-check"></i> Custom Features & Modules</li>
+                                <li><i class="fas fa-check"></i> Real-time Analytics Dashboard</li>
+                                <li><i class="fas fa-check"></i> Advanced Security Features</li>
+                                <li><i class="fas fa-check"></i> API Development</li>
+                                <li><i class="fas fa-check"></i> 24/7 Premium Support</li>
+                            </ul>
+                        </div>
+                        <a href="https://wa.me/+256743249384?text=Hello%20AOPearlTech%20Solutions,%20I%20am%20interested%20in%20the%20Professional%20Plan%20for%20an%20inventory%20system%20at%201,500,000%20UGX%20and%20above.%20Can%20we%20discuss%20further%20details?" class="btn btn-primary">Custom Quote</a>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-5 fade-in-up" style="animation-delay: 0.3s;">
+                <p class="text-muted">All prices are in Ugandan Shillings (UGX) with approximate USD equivalents. Custom pricing available for specialized projects.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="footer-about">
+                            <div class="footer-logo">
+                                <i class="fas fa-microchip"></i>AOPearlTech Solutions
+                            </div>
+                            <p>AOPearlTech Solutions is a leading technology company dedicated to empowering businesses with innovative, scalable, and secure systems. Since our founding in 2020, we have been committed to transforming the digital landscape for small and medium-sized enterprises.</p>
+                            <div class="social-icons">
+                                <a href="https://wa.me/+256743249384" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+                                <a href="https://www.instagram.com/arihotimo/" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                                <a href="https://x.com/arihotim" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+                                <a href="https://www.linkedin.com/in/timothy-ariho-aab4ab216/" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-6 mb-4">
+                        <h4 class="footer-heading">Quick Links</h4>
+                        <ul class="footer-links">
+                            <li><a href="index.html">Home</a></li>
+                            <li><a href="#services">Services</a></li>
+                            <li><a href="#about">About Us</a></li>
+                            <li><a href="#team">Our Team</a></li>
+                            <li><a href="#pricing">Pricing</a></li>
+                            <li><a href="project.html">Projects</a></li>
+                            <li><a href="contact.html">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <h4 class="footer-heading">Our Services</h4>
+                        <ul class="footer-links">
+                            <li><a href="#services">Web Development</a></li>
+                            <li><a href="#services">Web Design</a></li>
+                            <li><a href="#services">Inventory Systems</a></li>
+                            <li><a href="#services">Cybersecurity</a></li>
+                            <li><a href="#services">IT Consultation</a></li>
+                            <li><a href="#services">Mobile App Development</a></li>
+                            <li><a href="#services">Python & Django Projects</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <h4 class="footer-heading">Contact Us</h4>
+                        <div class="footer-contact">
+                            <p><i class="fas fa-phone"></i> <a href="tel:+256743249384">+256 743 249384</a></p>
+                            <p><i class="fas fa-envelope"></i> <a href="mailto:pearltechug@gmail.com">pearltechug@gmail.com</a></p>
+                            <p><i class="fas fa-map-marker-alt"></i> Kampala, Uganda</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; <span id="currentYear"></span> AOPearlTech Solutions. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Button -->
+    <a href="https://wa.me/+256743249384?text=Hello%20AOPearlTech%20Solutions!%20I%20would%20like%20to%20inquire%20about%20your%20services.%20Can%20we%20discuss%20how%20you%20can%20help%20with%20my%20project?" target="_blank" class="whatsapp-btn">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Service Modals (same as before, just styled to match new design) -->
+    <div class="modal fade" id="webDevModal" tabindex="-1" aria-labelledby="webDevModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="webDevModalLabel"><i class="fas fa-laptop-code me-2"></i>Web Development</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img src="img/webdevelopment.jpeg" alt="Web Development" class="img-fluid mb-3">
+                    <p>Our web development services deliver dynamic, responsive websites and applications tailored to your business needs. Using cutting-edge technologies like HTML, CSS, JavaScript, PHP, and modern frameworks, we create platforms that enhance user engagement and drive growth. Whether you need an e-commerce store, a corporate website, or a custom web application, we ensure seamless performance, scalability, and security. Move beyond outdated systems and embrace digital solutions that position your business for success in the competitive online landscape.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a href="contact.html" class="btn btn-primary"><i class="fas fa-envelope me-2"></i>Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Other modals would follow the same pattern -->
+
+    <script>
+        // Update copyright year
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        
+        // Animation on scroll
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, observerOptions);
+        
+        // Observe elements with animation classes
+        document.querySelectorAll('.fade-in-up, .slide-in-left, .slide-in-right').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+   <!-- Novyra Chat Widget -->
+<script>
+(function() {
+    var script = document.createElement("script");
+    script.src = "http://127.0.0.1:8000/api/embed/1/";
+    script.async = true;
+    document.body.appendChild(script);
+})();
+</script>
+</body>
+</html>

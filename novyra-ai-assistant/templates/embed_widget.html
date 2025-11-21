@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novyra Chat Widget</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        /* Floating Chat Button */
+        #novyraChatButton {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #0006B1;
+            color: #FFFFFF;
+            border: 2px solid #CFB53B;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 6, 177, 0.3);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            bottom: 25px;
+            right: 25px;
+        }
+
+        #novyraChatButton:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(0, 6, 177, 0.4);
+            background: #000580;
+        }
+
+        #novyraChatButton svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        /* Chat Widget Container */
+        #novyraChatWidget {
+            display: none;
+            position: fixed;
+            width: 380px;
+            max-width: calc(100vw - 40px);
+            height: 600px;
+            max-height: calc(100vh - 40px);
+            background: #000000;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 10000;
+            border: 2px solid #CFB53B;
+            bottom: 25px;
+            right: 25px;
+        }
+
+        #novyraChatWidget.active {
+            display: flex;
+            animation: slideInUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Chat Header */
+        .novyra-chat-header {
+            background: linear-gradient(135deg, #0006B1 0%, #000580 100%);
+            color: #FFFFFF;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 2px solid #CFB53B;
+        }
+
+        .novyra-chat-header .back-btn {
+            background: rgba(207, 181, 59, 0.2);
+            border: 1px solid #CFB53B;
+            color: #FFFFFF;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+
+        .novyra-chat-header .back-btn:hover {
+            background: rgba(207, 181, 59, 0.3);
+            transform: scale(1.05);
+        }
+
+        .novyra-bot-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #CFB53B;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            color: #000000;
+            border: 2px solid #FFFFFF;
+        }
+
+        .novyra-bot-info {
+            flex: 1;
+        }
+
+        .novyra-bot-info h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .novyra-bot-info p {
+            font-size: 12px;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        /* Chat Messages */
+        .novyra-chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #000000;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .novyra-message {
+            display: flex;
+            animation: messageSlideIn 0.3s ease-out;
+        }
+
+        @keyframes messageSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .novyra-message.user {
+            justify-content: flex-end;
+        }
+
+        .novyra-message.ai {
+            justify-content: flex-start;
+        }
+
+        .novyra-message-content {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            word-wrap: break-word;
+            line-height: 1.4;
+            font-size: 14px;
+            position: relative;
+        }
+
+        .novyra-message.user .novyra-message-content {
+            background: #0006B1;
+            color: #FFFFFF;
+            border-bottom-right-radius: 6px;
+        }
+
+        .novyra-message.ai .novyra-message-content {
+            background: #CFB53B;
+            color: #000000;
+            border-bottom-left-radius: 6px;
+            font-weight: 500;
+        }
+
+        .novyra-message-time {
+            font-size: 10px;
+            opacity: 0.7;
+            margin-top: 4px;
+            text-align: right;
+        }
+
+        .novyra-message.ai .novyra-message-time {
+            text-align: left;
+        }
+
+        /* Typing Indicator */
+        .novyra-typing-indicator {
+            display: none;
+            padding: 12px 16px;
+            background: #CFB53B;
+            border-radius: 18px;
+            max-width: 70px;
+            margin-bottom: 16px;
+            gap: 4px;
+            align-self: flex-start;
+        }
+
+        .novyra-typing-indicator.active {
+            display: flex;
+        }
+
+        .novyra-typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #000000;
+            animation: typing 1.4s infinite;
+        }
+
+        .novyra-typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .novyra-typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.7;
+            }
+            30% {
+                transform: translateY(-5px);
+                opacity: 1;
+            }
+        }
+
+        /* Quick Options */
+        .novyra-quick-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .novyra-quick-option {
+            padding: 8px 16px;
+            background: rgba(207, 181, 59, 0.15);
+            border: 1px solid #CFB53B;
+            border-radius: 20px;
+            color: #CFB53B;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 12px;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+        }
+
+        .novyra-quick-option:hover {
+            background: rgba(207, 181, 59, 0.25);
+            transform: translateY(-2px);
+        }
+
+        /* Input Form */
+        .novyra-input-form-container {
+            padding: 16px 20px;
+            background: #000000;
+            border-top: 1px solid #333;
+        }
+
+        .novyra-input-form {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .novyra-input-field {
+            flex: 1;
+            padding: 12px 18px;
+            border: 1px solid #333;
+            border-radius: 24px;
+            font-size: 14px;
+            outline: none;
+            resize: none;
+            max-height: 100px;
+            min-height: 44px;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            line-height: 1.4;
+            background: #111;
+            color: #FFFFFF;
+        }
+
+        .novyra-input-field::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 400;
+        }
+
+        .novyra-input-field:focus {
+            border-color: #0006B1;
+            background: #1a1a1a;
+            box-shadow: 0 0 0 2px rgba(0, 6, 177, 0.2);
+        }
+
+        .novyra-send-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            background: #0006B1;
+            color: #FFFFFF;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            box-shadow: 0 2px 10px rgba(0, 6, 177, 0.3);
+            font-size: 16px;
+        }
+
+        .novyra-send-btn:hover {
+            background: #000580;
+            transform: scale(1.08);
+            box-shadow: 0 4px 15px rgba(0, 6, 177, 0.4);
+        }
+
+        .novyra-send-btn:active {
+            transform: scale(0.95);
+        }
+
+        .novyra-send-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Scrollbar Styling */
+        .novyra-chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .novyra-chat-messages::-webkit-scrollbar-track {
+            background: #111;
+        }
+
+        .novyra-chat-messages::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        .novyra-chat-messages::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Welcome State */
+        .novyra-welcome-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #CFB53B;
+        }
+
+        .novyra-welcome-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.8;
+        }
+
+        .novyra-welcome-text {
+            font-size: 16px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .novyra-welcome-subtext {
+            font-size: 13px;
+            opacity: 0.7;
+            margin-bottom: 24px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            #novyraChatWidget {
+                width: calc(100vw - 32px);
+                height: calc(100vh - 100px);
+                max-width: none;
+                max-height: none;
+                bottom: 16px;
+                right: 16px;
+                left: 16px;
+                border-radius: 12px;
+            }
+
+            #novyraChatButton {
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .novyra-message-content {
+                max-width: 85%;
+            }
+        }
+
+        /* Notification Badge */
+        .novyra-notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #CFB53B;
+            color: #000000;
+            font-size: 10px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: 2px solid #000000;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Chat Button -->
+    <button id="novyraChatButton" onclick="toggleNovyraChat()">
+        <i class="fas fa-comments"></i>
+        <div class="novyra-notification-badge" id="novyraNotificationBadge">1</div>
+    </button>
+
+    <!-- Chat Widget -->
+    <div id="novyraChatWidget">
+        <div class="novyra-chat-header">
+            <button class="back-btn" onclick="toggleNovyraChat()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="novyra-bot-avatar">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="novyra-bot-info">
+                <h3>{{ bot_name|default:"Novyra AI Assistant" }}</h3>
+                <p id="novyraBotStatus">Online • Ready to help</p>
+            </div>
+        </div>
+
+        <div class="novyra-chat-messages" id="novyraChatMessages">
+            <!-- Welcome Message -->
+            <div class="novyra-welcome-state" id="novyraWelcomeState">
+                <div class="novyra-welcome-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="novyra-welcome-text">{{ bot_name|default:"Novyra AI" }}</div>
+                <div class="novyra-welcome-subtext">How can I assist you today?</div>
+                
+                <!-- Quick Options -->
+                <div class="novyra-quick-options">
+                    <button class="novyra-quick-option" onclick="sendQuickMessage('Tell me about your services')">
+                        💼 Our Services
+                    </button>
+                    <button class="novyra-quick-option" onclick="sendQuickMessage('What are your pricing plans?')">
+                        💰 Pricing
+                    </button>
+                    <button class="novyra-quick-option" onclick="sendQuickMessage('I need help with my account')">
+                        🔧 Support
+                    </button>
+                    <button class="novyra-quick-option" onclick="sendQuickMessage('Contact information')">
+                        📞 Contact
+                    </button>
+                </div>
+            </div>
+
+            <!-- Messages will be inserted here dynamically -->
+        </div>
+
+        <!-- Typing Indicator -->
+        <div class="novyra-typing-indicator" id="novyraTypingIndicator">
+            <div class="novyra-typing-dot"></div>
+            <div class="novyra-typing-dot"></div>
+            <div class="novyra-typing-dot"></div>
+        </div>
+
+        <!-- Input Form -->
+        <div class="novyra-input-form-container">
+            <form class="novyra-input-form" id="novyraChatForm" onsubmit="sendMessage(event)">
+                <textarea 
+                    class="novyra-input-field" 
+                    id="novyraMessageInput" 
+                    placeholder="Type your message..." 
+                    rows="1" 
+                    autocomplete="off"
+                ></textarea>
+                <button type="submit" class="novyra-send-btn" id="novyraSendBtn" title="Send">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * Novyra Chat Widget - Integrated with DeepSeek AI
+         * This widget handles:
+         * - DeepSeek AI intelligent responses
+         * - Agent escalation and connection
+         * - Real-time message polling
+         * - Session management
+         */
+        
+        // Get API base URL from template context or use current origin
+        const API_BASE_URL = '{{ api_base_url|default:"" }}' || window.location.origin;
+        
+        // Configuration from Django context
+        const widgetConfig = {
+            botName: '{{ bot_name|default:"Novyra AI" }}',
+            buttonColor: '{{ button_color|default:"#0006B1" }}',
+            buttonPosition: '{{ button_position|default:"bottom-right" }}',
+            widgetWidth: {% if widget_width %}{{ widget_width }}{% else %}380{% endif %},
+            widgetHeight: {% if widget_height %}{{ widget_height }}{% else %}600{% endif %}
+        };
+        
+        // Configuration
+        const config = {
+            botName: widgetConfig.botName,
+            botAvatar: "🤖",
+            primaryColor: widgetConfig.buttonColor,
+            secondaryColor: "#CFB53B",
+            welcomeMessage: "Hello! I'm " + widgetConfig.botName + ", your intelligent assistant. How can I help you today?",
+            autoOpen: false,
+            showNotification: true
+        };
+        
+        // Apply widget configuration to CSS
+        function applyWidgetConfig() {
+            const chatButton = document.getElementById('novyraChatButton');
+            const chatWidget = document.getElementById('novyraChatWidget');
+            
+            if (chatButton) {
+                chatButton.style.background = widgetConfig.buttonColor;
+                // Apply position
+                const positionMap = {
+                    'bottom-right': {bottom: '25px', right: '25px', top: 'auto', left: 'auto'},
+                    'bottom-left': {bottom: '25px', left: '25px', top: 'auto', right: 'auto'},
+                    'top-right': {top: '25px', right: '25px', bottom: 'auto', left: 'auto'},
+                    'top-left': {top: '25px', left: '25px', bottom: 'auto', right: 'auto'}
+                };
+                const position = positionMap[widgetConfig.buttonPosition] || positionMap['bottom-right'];
+                Object.keys(position).forEach(key => {
+                    chatButton.style[key] = position[key];
+                });
+            }
+            
+            if (chatWidget) {
+                chatWidget.style.width = widgetConfig.widgetWidth + 'px';
+                chatWidget.style.height = widgetConfig.widgetHeight + 'px';
+                const positionMap = {
+                    'bottom-right': {bottom: '25px', right: '25px', top: 'auto', left: 'auto'},
+                    'bottom-left': {bottom: '25px', left: '25px', top: 'auto', right: 'auto'},
+                    'top-right': {top: '25px', right: '25px', bottom: 'auto', left: 'auto'},
+                    'top-left': {top: '25px', left: '25px', bottom: 'auto', right: 'auto'}
+                };
+                const position = positionMap[widgetConfig.buttonPosition] || positionMap['bottom-right'];
+                Object.keys(position).forEach(key => {
+                    chatWidget.style[key] = position[key];
+                });
+            }
+        }
+
+        // State management
+        let sessionId = null;
+        let customerInfo = {};
+        let currentStep = 'welcome';
+        let isRecording = false;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let recordingTimer = null;
+        let recordingStartTime = null;
+        let agentAvailable = true;
+        let businessHours = true;
+        let assignedAgentName = null;
+        let assignedAgentUsername = null;
+        let messagePollInterval = null;
+        let lastMessageId = 0;
+        let displayedMessageIds = new Set();
+        
+        let chatState = {
+            isOpen: false,
+            messages: [],
+            isTyping: false
+        };
+
+        // DOM Elements
+        const chatButton = document.getElementById('novyraChatButton');
+        const chatWidget = document.getElementById('novyraChatWidget');
+        const chatMessages = document.getElementById('novyraChatMessages');
+        const messageInput = document.getElementById('novyraMessageInput');
+        const sendButton = document.getElementById('novyraSendBtn');
+        const typingIndicator = document.getElementById('novyraTypingIndicator');
+        const welcomeState = document.getElementById('novyraWelcomeState');
+        const notificationBadge = document.getElementById('novyraNotificationBadge');
+
+        // Initialize chat
+        function initChat() {
+            // Apply widget configuration first
+            applyWidgetConfig();
+            
+            setupEventListeners();
+            autoResizeTextarea();
+            
+            if (config.autoOpen) {
+                setTimeout(openChat, 1000);
+            }
+            
+            if (config.showNotification) {
+                showNotification();
+            }
+        }
+
+        function setupEventListeners() {
+            // Auto-resize textarea
+            messageInput.addEventListener('input', autoResizeTextarea);
+            
+            // Enter key to send (Shift+Enter for new line)
+            messageInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    if (this.value.trim()) {
+                        sendMessage(new Event('submit'));
+                    }
+                }
+            });
+            
+            // Close chat when clicking outside
+            document.addEventListener('click', function(e) {
+                if (chatState.isOpen && 
+                    !chatWidget.contains(e.target) && 
+                    !chatButton.contains(e.target)) {
+                    closeChat();
+                }
+            });
+
+            // Handle escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && chatState.isOpen) {
+                    closeChat();
+                }
+            });
+        }
+
+        function toggleNovyraChat() {
+            if (chatState.isOpen) {
+                closeChat();
+            } else {
+                openChat();
+            }
+        }
+
+        async function openChat() {
+            chatState.isOpen = true;
+            chatWidget.classList.add('active');
+            chatButton.style.display = 'none';
+            hideNotification();
+            messageInput.focus();
+            
+            // Load existing messages
+            await loadExistingMessages();
+            
+            // Add welcome message if no messages yet
+            if (chatState.messages.length === 0) {
+                setTimeout(() => {
+                    addMessage(config.welcomeMessage, 'ai');
+                }, 500);
+            }
+        }
+
+        function closeChat() {
+            chatState.isOpen = false;
+            chatWidget.classList.remove('active');
+            chatButton.style.display = 'flex';
+            stopMessagePolling();
+        }
+        
+        // Load existing messages on open
+        async function loadExistingMessages() {
+            try {
+                const currentSessionId = getSessionId();
+                if (!currentSessionId) return;
+                
+                const response = await fetch(`${API_BASE_URL}/api/chat/${currentSessionId}/messages/`);
+                if (!response.ok) return;
+                
+                const data = await response.json();
+                if (data.messages && Array.isArray(data.messages)) {
+                    const sortedMessages = data.messages.sort((a, b) => a.id - b.id);
+                    
+                    sortedMessages.forEach(message => {
+                        if (message.id > lastMessageId) {
+                            lastMessageId = message.id;
+                        }
+                        displayedMessageIds.add(message.id);
+                        
+                        if (message.message_type !== 'system') {
+                            addMessage(
+                                message.content,
+                                message.message_type,
+                                message.attachment_url,
+                                message.attachment_type,
+                                message.sender_profile_picture,
+                                message.is_read,
+                                message.read_by_profile_picture,
+                                message.read_by_name
+                            );
+                        }
+                    });
+                    
+                    // Check if agent is assigned
+                    if (data.messages.length > 0) {
+                        const lastMessage = data.messages[data.messages.length - 1];
+                        // Start polling if there's an active session
+                        startMessagePolling();
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading existing messages:', error);
+            }
+        }
+
+        // Get session ID
+        function getSessionId() {
+            if (!sessionId) {
+                sessionId = localStorage.getItem('novyra_chat_session_id');
+                if (!sessionId) {
+                    sessionId = 'session_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+                    localStorage.setItem('novyra_chat_session_id', sessionId);
+                }
+            }
+            return sessionId;
+        }
+        
+        // Get cookie helper
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        
+        async function sendMessage(event) {
+            event.preventDefault();
+            
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            // Add user message
+            addMessage(message, 'user');
+            messageInput.value = '';
+            autoResizeTextarea();
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            try {
+                // Send message to API
+                const response = await fetch(`${API_BASE_URL}/api/chat/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        session_id: getSessionId(),
+                        message: message,
+                        customer_name: customerInfo.name,
+                        customer_email: customerInfo.email,
+                        customer_phone: customerInfo.phone
+                    })
+                });
+                
+                const data = await response.json();
+                hideTypingIndicator();
+                
+                // Handle agent connection (highest priority)
+                const isNewConnection = (data.agent_connected || (data.assigned_agent_name || data.assigned_agent)) && !assignedAgentName;
+                
+                if (data.agent_connected || data.assigned_agent_name || data.assigned_agent) {
+                    if (!assignedAgentName || isNewConnection) {
+                        assignedAgentName = data.assigned_agent_name || data.assigned_agent;
+                        assignedAgentUsername = data.assigned_agent;
+                        const agentProfilePicture = data.assigned_agent_profile_picture || null;
+                        updateChatHeaderForAgent(assignedAgentName, agentProfilePicture);
+                        
+                        // Always start polling when agent is connected
+                        startMessagePolling();
+                    } else {
+                        // Agent already assigned, just ensure polling is active
+                        startMessagePolling();
+                    }
+                }
+                
+                // Show AI/Agent response if available
+                // CRITICAL: If agent is already connected, don't show ANY AI responses
+                // Let agent and customer chat freely
+                if (data.message && data.message.trim()) {
+                    // Check if agent is already connected (not a new connection)
+                    if (assignedAgentName && !isNewConnection) {
+                        // Agent already connected - DON'T show AI responses or connection messages
+                        // Only show if it's actually from the agent (message_type would be 'agent')
+                        // Skip all AI responses when agent is connected
+                        if (data.message_type === 'agent' || (data.assigned_agent && assignedAgentName)) {
+                            // This is from agent - show it
+                            addMessage(data.message, 'agent');
+                        }
+                        // Otherwise, skip it - let them chat freely without AI interference
+                    } else {
+                        // New connection or no agent - show message normally
+                        // Show connection message only if it's a new connection
+                        if (isNewConnection && data.show_connection_message !== false) {
+                            // New connection - show connection message
+                            addMessage(data.message, 'ai');
+                        } else if (!assignedAgentName) {
+                            // No agent - show AI response normally
+                            addMessage(data.message, 'ai');
+                        }
+                    }
+                }
+                
+                // Handle escalation status
+                if (data.escalation_triggered && !data.assigned_agent) {
+                    // Escalation requested but agent not yet assigned
+                    if (data.status === 'waiting_agent') {
+                        // Show waiting message if not already in response
+                        if (!data.message || !data.message.includes('waiting')) {
+                            addMessage("Your request has been received. An agent will be with you shortly. Thank you for your patience! 😊", 'ai');
+                        }
+                    }
+                }
+                
+                // Start polling for agent messages if agent is assigned or waiting
+                if (data.assigned_agent || data.status === 'waiting_agent' || data.status === 'agent_assigned') {
+                    startMessagePolling();
+                }
+                
+                // Handle quick actions if provided
+                if (data.quick_actions && Array.isArray(data.quick_actions) && data.quick_actions.length > 0) {
+                    // You can add quick action buttons here if needed
+                    console.log('Quick actions available:', data.quick_actions);
+                }
+            } catch (error) {
+                hideTypingIndicator();
+                console.error('Error sending message:', error);
+                
+                // Better error handling
+                let errorMessage = "I'm sorry, there was an error processing your message. ";
+                if (error.message && error.message.includes('fetch')) {
+                    errorMessage += "Please check your internet connection and try again.";
+                } else {
+                    errorMessage += "Please try again in a moment.";
+                }
+                addMessage(errorMessage, 'ai');
+            }
+        }
+        
+        // Poll for new messages
+        async function pollForNewMessages() {
+            try {
+                const currentSessionId = getSessionId();
+                if (!currentSessionId || !chatState.isOpen) return;
+                
+                const response = await fetch(`${API_BASE_URL}/api/chat/${currentSessionId}/messages/`);
+                if (!response.ok) return;
+                
+                const data = await response.json();
+                if (data.messages && Array.isArray(data.messages)) {
+                    const newMessages = data.messages.filter(message => {
+                        return message.id > lastMessageId && 
+                               !displayedMessageIds.has(message.id) &&
+                               message.message_type !== 'system';
+                    });
+                    
+                    newMessages.forEach(message => {
+                        displayedMessageIds.add(message.id);
+                        if (message.id > lastMessageId) {
+                            lastMessageId = message.id;
+                        }
+                        
+                        if (message.message_type === 'agent' || message.message_type === 'ai') {
+                            addMessage(
+                                message.content,
+                                message.message_type,
+                                message.attachment_url,
+                                message.attachment_type,
+                                message.sender_profile_picture,
+                                message.is_read,
+                                message.read_by_profile_picture,
+                                message.read_by_name
+                            );
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error polling for messages:', error);
+            }
+        }
+        
+        // Start message polling
+        function startMessagePolling() {
+            if (messagePollInterval) return; // Already polling
+            messagePollInterval = setInterval(pollForNewMessages, 2000);
+        }
+        
+        // Stop message polling
+        function stopMessagePolling() {
+            if (messagePollInterval) {
+                clearInterval(messagePollInterval);
+                messagePollInterval = null;
+            }
+        }
+        
+        // Update chat header for agent
+        function updateChatHeaderForAgent(agentName, agentProfilePicture = null) {
+            const botInfoH3 = document.querySelector('.novyra-bot-info h3');
+            const botInfoP = document.querySelector('.novyra-bot-info p');
+            const botAvatar = document.querySelector('.novyra-bot-avatar');
+            
+            if (botInfoH3) {
+                botInfoH3.textContent = agentName;
+            }
+            if (botInfoP) {
+                botInfoP.textContent = 'Online • Typing...';
+            }
+            
+            if (botAvatar && agentProfilePicture) {
+                botAvatar.innerHTML = `<img src="${agentProfilePicture}" alt="${agentName}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+            } else if (botAvatar && !agentProfilePicture) {
+                botAvatar.textContent = agentName ? agentName.charAt(0).toUpperCase() : 'A';
+                botAvatar.innerHTML = '';
+                botAvatar.textContent = agentName ? agentName.charAt(0).toUpperCase() : 'A';
+            }
+        }
+
+        function sendQuickMessage(message) {
+            messageInput.value = message;
+            sendMessage(new Event('submit'));
+        }
+
+        function addMessage(content, sender, attachmentUrl = null, attachmentType = null, senderProfilePicture = null, isRead = false, readByProfilePicture = null, readByName = null) {
+            // Hide welcome state on first message
+            if (welcomeState && welcomeState.style.display !== 'none') {
+                welcomeState.style.display = 'none';
+            }
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `novyra-message ${sender}`;
+            
+            // Add sender info for agent messages
+            if (sender === 'agent' && (assignedAgentName || senderProfilePicture)) {
+                const senderDiv = document.createElement('div');
+                senderDiv.style.cssText = 'display: flex; align-items: center; gap: 6px; margin-bottom: 4px; font-size: 11px; color: rgba(255,255,255,0.7);';
+                
+                if (senderProfilePicture) {
+                    const profileImg = document.createElement('img');
+                    profileImg.src = senderProfilePicture;
+                    profileImg.alt = assignedAgentName || 'Agent';
+                    profileImg.style.cssText = 'width: 20px; height: 20px; border-radius: 50%; object-fit: cover;';
+                    profileImg.onerror = function() { this.style.display = 'none'; };
+                    senderDiv.appendChild(profileImg);
+                }
+                
+                const senderName = document.createElement('span');
+                senderName.textContent = assignedAgentName || 'Agent';
+                senderDiv.appendChild(senderName);
+                messageDiv.appendChild(senderDiv);
+            }
+            
+            // Handle voice messages
+            if (attachmentUrl && (attachmentType === 'voice' || attachmentUrl.match(/\.(webm|mp3|ogg|wav|m4a)$/i))) {
+                const voiceDiv = document.createElement('div');
+                voiceDiv.className = 'novyra-message-content';
+                voiceDiv.style.cssText = 'display: flex; align-items: center; gap: 12px; padding: 12px 16px; cursor: pointer;';
+                
+                const playBtn = document.createElement('button');
+                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                playBtn.style.cssText = 'width: 36px; height: 36px; border-radius: 50%; border: none; background: rgba(255,255,255,0.2); color: currentColor; cursor: pointer; display: flex; align-items: center; justify-content: center;';
+                playBtn.onclick = function(e) {
+                    e.stopPropagation();
+                    playVoiceMessage(attachmentUrl, this, voiceDiv);
+                };
+                
+                const voiceInfo = document.createElement('div');
+                voiceInfo.innerHTML = `
+                    <div style="font-size: 13px; font-weight: 500;">Voice message</div>
+                    <div style="font-size: 11px; opacity: 0.7;">Tap to play</div>
+                `;
+                
+                voiceDiv.appendChild(playBtn);
+                voiceDiv.appendChild(voiceInfo);
+                messageDiv.appendChild(voiceDiv);
+            } else {
+                const messageContent = document.createElement('div');
+                messageContent.className = 'novyra-message-content';
+                messageContent.innerHTML = content.replace(/\n/g, '<br>');
+                messageDiv.appendChild(messageContent);
+            }
+            
+            const messageTime = document.createElement('div');
+            messageTime.className = 'novyra-message-time';
+            messageTime.textContent = getCurrentTime();
+            messageDiv.appendChild(messageTime);
+            
+            // Add seen indicator if message is read
+            if (isRead && readByProfilePicture) {
+                const seenIndicator = document.createElement('div');
+                seenIndicator.style.cssText = 'display: flex; align-items: center; gap: 4px; margin-top: 4px; font-size: 10px; opacity: 0.7;';
+                
+                const seenLabel = document.createElement('span');
+                seenLabel.textContent = 'Seen by';
+                seenIndicator.appendChild(seenLabel);
+                
+                const seenProfile = document.createElement('img');
+                seenProfile.src = readByProfilePicture;
+                seenProfile.alt = readByName || 'Agent';
+                seenProfile.style.cssText = 'width: 14px; height: 14px; border-radius: 50%; object-fit: cover;';
+                seenProfile.onerror = function() { this.style.display = 'none'; };
+                seenIndicator.appendChild(seenProfile);
+                
+                messageDiv.appendChild(seenIndicator);
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Add to message history
+            chatState.messages.push({
+                content: content,
+                sender: sender,
+                timestamp: new Date().toISOString()
+            });
+        }
+        
+        // Play voice message
+        let currentAudio = null;
+        function playVoiceMessage(audioUrl, button, voiceDiv) {
+            if (currentAudio && !currentAudio.paused) {
+                currentAudio.pause();
+                currentAudio = null;
+                button.innerHTML = '<i class="fas fa-play"></i>';
+                if (voiceDiv) voiceDiv.classList.remove('playing');
+                return;
+            }
+            
+            currentAudio = new Audio(audioUrl);
+            button.innerHTML = '<i class="fas fa-pause"></i>';
+            if (voiceDiv) voiceDiv.classList.add('playing');
+            
+            currentAudio.onended = function() {
+                button.innerHTML = '<i class="fas fa-play"></i>';
+                if (voiceDiv) voiceDiv.classList.remove('playing');
+                currentAudio = null;
+            };
+            
+            currentAudio.onerror = function() {
+                button.innerHTML = '<i class="fas fa-play"></i>';
+                if (voiceDiv) voiceDiv.classList.remove('playing');
+                currentAudio = null;
+            };
+            
+            currentAudio.play();
+        }
+
+        function showTypingIndicator() {
+            chatState.isTyping = true;
+            typingIndicator.classList.add('active');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            chatState.isTyping = false;
+            typingIndicator.classList.remove('active');
+        }
+
+        function showNotification() {
+            if (!chatState.isOpen) {
+                notificationBadge.style.display = 'flex';
+            }
+        }
+
+        function hideNotification() {
+            notificationBadge.style.display = 'none';
+        }
+
+        function autoResizeTextarea() {
+            messageInput.style.height = 'auto';
+            messageInput.style.height = Math.min(messageInput.scrollHeight, 100) + 'px';
+        }
+
+
+        function getCurrentTime() {
+            return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+
+        // Make widget globally accessible
+        window.NovyraChatWidget = {
+            open: openChat,
+            close: closeChat,
+            sendMessage: function(message) {
+                if (message) {
+                    messageInput.value = message;
+                    sendMessage(new Event('submit'));
+                }
+            },
+            updateConfig: function(newConfig) {
+                Object.assign(config, newConfig);
+            }
+        };
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initChat);
+
+        // Auto-initialize if script is loaded async
+        if (document.readyState === 'interactive' || document.readyState === 'complete') {
+            initChat();
+        }
+    </script>
+</body>
+</html>
