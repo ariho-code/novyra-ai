@@ -2,23 +2,39 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/index.py",
-      "use": "@vercel/python"
+      "src": "novyra_ai/wsgi.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "50mb",
+        "runtime": "python3.11"
+      }
+    },
+    {
+      "src": "build_files.py",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "staticfiles"
+      }
     }
   ],
   "routes": [
     {
+      "src": "/static/(.*)",
+      "dest": "/staticfiles/$1"
+    },
+    {
+      "src": "/media/(.*)",
+      "dest": "/media/$1"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/api/index.py"
+      "dest": "novyra_ai/wsgi.py"
     }
   ],
-  "env": {
-    "PYTHONUNBUFFERED": "1"
-  },
   "functions": {
-    "api/index.py": {
-      "maxDuration": 30
+    "novyra_ai/wsgi.py": {
+      "memory": 2048,
+      "maxDuration": 60
     }
   }
 }
-
